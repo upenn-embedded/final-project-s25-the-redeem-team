@@ -2,20 +2,26 @@
 # final-project-skeleton
 
 * Team Number:
-* Team Name:
-* Team Members:
-* GitHub Repository URL:
-* GitHub Pages Website URL: [for final submission]
+* Team Name: The Redeem Team
+* Team Members: Garrett Kirsch, 
+* GitHub Repository URL: https://github.com/upenn-embedded/final-project-s25-the-redeem-team.git
+* GitHub Pages Website URL: 
 
 ## Final Project Proposal
 
 ### 1. Abstract
 
-*In a few sentences, describe your final project.*
+This project is a music transcriber: it takes in a melody played on an electric piano, converts it to a key and octave of your choosing, then plays it back to the user for quick testing. 
 
 ### 2. Motivation
 
 *What is the problem that you are trying to solve? Why is this project interesting? What is the intended purpose?*
+
+Many musicians (*cough* singers) don't know how to read sheet music and haven't learned anything about music theory. This makes it difficult for them to adapt their music to different keys as they don't have the necessary theory background.
+
+This product will allow them, and learned musicians that couldn't be bothered, to quickly alter their melodies to fit a different key or octave, either for stylistic purposes or because the original music was not in their range.
+
+Key benefits: quick testing of new ideas, easy accessibility to people without music theory backgrounds.
 
 ### 3. System Block Diagram
 
