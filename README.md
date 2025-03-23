@@ -15,8 +15,6 @@ This project is a music transcriber: it takes in a melody played on an electric 
 
 ### 2. Motivation
 
-*What is the problem that you are trying to solve? Why is this project interesting? What is the intended purpose?*
-
 Many musicians (*cough* singers) don't know how to read sheet music and haven't learned anything about music theory. This makes it difficult for them to adapt their music to different keys as they don't have the necessary theory background.
 
 This product will allow them, and learned musicians that couldn't be bothered, to quickly alter their melodies to fit a different key or octave, either for stylistic purposes or because the original music was not in their range.
@@ -25,7 +23,13 @@ Key benefits: quick testing of new ideas, easy accessibility to people without m
 
 ### 3. System Block Diagram
 
-*Show your high level design, as done in WS1 and WS2. What are the critical components in your system? How do they communicate (I2C?, interrupts, ADC, etc.)? What power regulation do you need?*
+Critical Components: (likely will not need power regulation circuits)
+- Electric piano
+- Atmega328PB
+- Video Display
+- Control Buttons (might replace with a WiFi chip and an app if time allows)
+
+![system_block_diagram](system_block_diagram.png)
 
 ### 4. Design Sketches
 
