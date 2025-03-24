@@ -56,22 +56,15 @@ Here, you will define any special terms, acronyms, or abbreviations you plan to 
 
 ### 6. Hardware Requirements Specification (HRS)
 
-*Formulate key hardware requirements here. Think deeply on the design: What must your device do? How will you measure this during validation testing? Create 4 to 8 critical system requirements.*
-
-*These must be testable! See the Final Project Manual Appendix for details. Refer to the table below; replace these examples with your own.*
-
-**6.1 Definitions, Abbreviations**
-
-Here, you will define any special terms, acronyms, or abbreviations you plan to use for hardware
-
-**6.2 Functionality**
-
 | ID     | Description                                                                                                                        |
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| HRS-01 | A distance sensor shall be used for obstacle detection. The sensor shall detect obstacles at a maximum distance of at least 10 cm. |
-| HRS-02 | A noisemaker shall be inside the trap with a strength of at least 55 dB.                                                           |
-| HRS-03 | An electronic motor shall be used to reset the trap remotely and have a torque of 40 Nm in order to reset the trap mechanism.      |
-| HRS-04 | A camera sensor shall be used to capture images of the trap interior. The resolution shall be at least 480p.                       |
+| HRS-01 | A mini electric piano will be used to provide inputs (i.e. music) that will then be processed by the atmega           |
+| HRS-02 | The mini-piano will also be used to output music - both the raw inputs and the transcribed outputs                   |
+| HRS-03 | 4 buttons will be used to choose the input key of the music. |
+| HRS-04 | 4 buttons will be used to choose the output key of the music   |
+| HRS-05 | A screen will be used to display the input key, output key, input octave, and output octave of the music.      |
+| HRS-06 | 2 buttons will be used to cycle through octaves.                   |
+
 
 ### 7. Bill of Materials (BOM)
 
