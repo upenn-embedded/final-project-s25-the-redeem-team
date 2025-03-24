@@ -88,6 +88,8 @@ AST-03008MR-R Buzzer: Externally driven (PWM) magnetic buzzer with wide frequenc
 
 1N4148 Diode: Required for circuit protection by the datasheet.
 
+1.8" Color TFT LCD display with MicroSD Card Breakout - ST7735R: We already have this screen, so we will use this.
+
 Potential resistors/transistors/breadboards/cables/buttons/potentiometres (we will get them through detkin).
 
 *In addition to this written response, copy the Final Project BOM Google Sheet and fill it out with your critical components (think: processors, sensors, actuators). Include the link to your BOM in this section.*
