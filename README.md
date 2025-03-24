@@ -76,7 +76,19 @@ Here, you will define any special terms, acronyms, or abbreviations you plan to 
 
 *What major components do you need and why? Try to be as specific as possible. Your Hardware & Software Requirements Specifications should inform your component choices.*
 
-We mainly need a mini-piano looking device that outputs MIDI signals (UART), a cable, a Jack Socket Connector that splits the signals of the cable, a 6N138 opto-isolator that is required to provide electrical isolation and enhaced signal integrity, the chip, the buzzer and potential resistors/transistors/breadboards/cables (we will get them through detkin).
+Piano: It is a MIDI keyboard chosen for full-size velocity-sensitive keys, real-time note transmission over 5-pin DIN (not USB), and wide availability.
+
+MIDI Cable: Standard 5 pin M-M cable, compatible with SDS-50J.
+
+6N138: Opto-isolator. Required for signal preservation according to the datasheet. Supports 31,250 baud rate we need for UART.
+
+SDS-50J Connector: Matches the pins from the cable to wires.
+
+AST-03008MR-R Buzzer: Externally driven (PWM) magnetic buzzer with wide frequency range (300–8,000 Hz) to play all the notes.
+
+1N4148 Diode: Required for circuit protection by the datasheet.
+
+Potential resistors/transistors/breadboards/cables/buttons/potentiometres (we will get them through detkin).
 
 *In addition to this written response, copy the Final Project BOM Google Sheet and fill it out with your critical components (think: processors, sensors, actuators). Include the link to your BOM in this section.*
 
