@@ -35,6 +35,8 @@ Critical Components: (likely will not need power regulation circuits)
 
 *What will your project look like? Do you have any critical design features? Will you need any special manufacturing techniques to achieve your vision, like power tools, laser cutting, or 3D printing?*
 
+![](design_sketch.jpg)
+
 ### 5. Software Requirements Specification (SRS)
 
 *Formulate key software requirements here. Think deeply on the design: What must your device do? How will you measure this during validation testing? Create 4 to 8 critical system requirements.*
@@ -49,10 +51,14 @@ Here, you will define any special terms, acronyms, or abbreviations you plan to 
 
 | ID     | Description                                                                                                                                                                                                              |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| SRS-01 | The IMU 3-axis acceleration will be measured with 16-bit depth every 100 milliseconds +/-10 milliseconds                                                                                                                 |
-| SRS-02 | The distance sensor shall operate and report values at least every .5 seconds.                                                                                                                                           |
-| SRS-03 | Upon non-nominal distance detected (i.e., the trap mechanism has changed at least 10 cm from the nominal range), the system shall be able to detect the change and alert the user in a timely manner (within 5 seconds). |
-| SRS-04 | Upon a request from the user, the system shall get an image from the internal camera and upload the image to the user system within 10s.                                                                                 |
+| SRS-01 | The user’s manual input of the current key (via button press) should be consistent with the notes of the inputted melody, i.e. we check that the notes of the inputted melody match the key signature of the manually inputted initial key. If they don’t match, an error message shall be displayed to the user, and perhaps a few compatible keys can be suggested by the system (this would be an advanced feature).                                                                                                                  |
+| SRS-02 | The notes from the input recording shall be cleaned and parsed accurately based on their frequencies. For initial testing, we will assume that one note is placed at a time (no chords) and the melody is not more than seven notes. Once it can parse this simple input successfully, we will incrementally test chords and more complex melodies.                                                                                                                                           |
+| SRS-03 | The screen display shall correctly depict the selected key and octave from the button presses. |
+| SRS-04 | The user shall not be able to select a desired key transcription that is not compatible with the key of the current melody (e.g. the user cannot select to transcribe to a minor key if the inputted melody is in a major key).                                                                                 |
+| SRS-05 | The transcription algorithm shall correctly transcribe the melody into the user’s desired key and octave. The validation for this will involve several stages of testing. First, we will test with a limited selection of keys (namely, the most common ones: C major, D major, G major, A major) and with one standard octave (C4). After we confirm that the algorithm can accurately transcribe a few simple melodies with these common keys in C4, then we can gradually add one or two octaves (as many as the keyboard allows) and test. Finally, we can begin adding and testing more complex keys or test more complex input melodies with the common keys.                                                                                 |
+| SRS-06 | The speaker shall correctly output the transcribed melody. We will test on the same types of inputs as the transcription algorithm and in similar order.                                                                               |
+| SRS-07 | The screen should correctly display the names of the notes from the transposed melody in a readable format, so the user can try to play the transposed melody on the keyboard if they so choose.                                                                                |
+| SRS-08 | The screen should display the transcribed notes and the speaker will play the frequencies of the transcribed notes simultaneously.                                                                                |                                                                           
 
 ### 6. Hardware Requirements Specification (HRS)
 
