@@ -70,6 +70,8 @@ Here, you will define any special terms, acronyms, or abbreviations you plan to 
 
 *What major components do you need and why? Try to be as specific as possible. Your Hardware & Software Requirements Specifications should inform your component choices.*
 
+We mainly need a mini-piano looking device that outputs MIDI signals (UART), a cable, a Jack Socket Connector that splits the signals of the cable, a 6N138 opto-isolator that is required to provide electrical isolation and enhaced signal integrity, the chip, the buzzer and potential resistors/transistors/breadboards/cables (we will get them through detkin).
+
 *In addition to this written response, copy the Final Project BOM Google Sheet and fill it out with your critical components (think: processors, sensors, actuators). Include the link to your BOM in this section.*
 
 https://docs.google.com/spreadsheets/d/1vXRE2RFJ4J_eHgv4eHKd_utGaQBJlPumqM2778kMy1A/edit?gid=253149064#gid=253149064
