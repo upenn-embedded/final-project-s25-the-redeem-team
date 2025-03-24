@@ -90,10 +90,10 @@ The constraint is just enough space on the workbench.
 
 | Milestone  | Functionality Achieved | Distribution of Work |
 | ---------- | ---------------------- | -------------------- |
-| Sprint #1  |                        |                      |
-| Sprint #2  |                        |                      |
-| MVP Demo   |                        |                      |
-| Final Demo |                        |                      |
+| Sprint #1  | Input circuit works, we have connection between the piano and the MCU; UART works and we get response; Parsing notes and timings   | Nikolaos - Circuitry; Melina: UART enable communication and load the notes; Garrett: MIDI keyboard works + mock input test    |
+| Sprint #2  |  Transposition works and we are able to produce correct new frequencies; Timing works and buzzer (+ circuit) is able to produce notes.       |  Garrett & Melina - Timing logic; Nikolaos: being able to programme the output to the buzzer, programme switch, testing that everything works  |
+| MVP Demo   |   Everything works together maybe with some integration issues, but reliable input/output  |  All hands: Team works together to integrate the different parts each one made. We reharse and made sure we have a viable MVP |
+| Final Demo |   Final polish, potential UX enhancement (LEDs etc), edge cases, make sure everything works flawlessly         |    All hands work together because 6 eyes/ears are better than 2 in catching issues                 |
 
 **This is the end of the Project Proposal section. The remaining sections will be filled out based on the milestone schedule.**
 
