@@ -11,7 +11,7 @@
 
 ### 1. Abstract
 
-This project is a music transcriber: it takes in a melody played on an electric piano, converts it to a key and octave of your choosing, then plays it back to the user for quick testing. 
+This project is a music transposer: it takes in a melody played on an electric piano, converts it to a key and octave of your choosing, then plays it back to the user for quick testing. 
 
 ### 2. Motivation
 
@@ -54,11 +54,11 @@ Here, you will define any special terms, acronyms, or abbreviations you plan to 
 | SRS-01 | The user’s manual input of the current key (via button press) should be consistent with the notes of the inputted melody, i.e. we check that the notes of the inputted melody match the key signature of the manually inputted initial key. If they don’t match, an error message shall be displayed to the user, and perhaps a few compatible keys can be suggested by the system (this would be an advanced feature).                                                                                                                  |
 | SRS-02 | The notes from the input recording shall be cleaned and parsed accurately based on their frequencies. For initial testing, we will assume that one note is placed at a time (no chords) and the melody is not more than seven notes. Once it can parse this simple input successfully, we will incrementally test chords and more complex melodies.                                                                                                                                           |
 | SRS-03 | The screen display shall correctly depict the selected key and octave from the button presses. |
-| SRS-04 | The user shall not be able to select a desired key transcription that is not compatible with the key of the current melody (e.g. the user cannot select to transcribe to a minor key if the inputted melody is in a major key).                                                                                 |
-| SRS-05 | The transcription algorithm shall correctly transcribe the melody into the user’s desired key and octave. The validation for this will involve several stages of testing. First, we will test with a limited selection of keys (namely, the most common ones: C major, D major, G major, A major) and with one standard octave (C4). After we confirm that the algorithm can accurately transcribe a few simple melodies with these common keys in C4, then we can gradually add one or two octaves (as many as the keyboard allows) and test. Finally, we can begin adding and testing more complex keys or test more complex input melodies with the common keys.                                                                                 |
-| SRS-06 | The speaker shall correctly output the transcribed melody. We will test on the same types of inputs as the transcription algorithm and in similar order.                                                                               |
+| SRS-04 | The user shall not be able to select a desired key transposition that is not compatible with the key of the current melody (e.g. the user cannot select to transposition to a minor key if the inputted melody is in a major key).                                                                                 |
+| SRS-05 | The transposition algorithm shall correctly transposition the melody into the user’s desired key and octave. The validation for this will involve several stages of testing. First, we will test with a limited selection of keys (namely, the most common ones: C major, D major, G major, A major) and with one standard octave (C4). After we confirm that the algorithm can accurately transposition a few simple melodies with these common keys in C4, then we can gradually add one or two octaves (as many as the keyboard allows) and test. Finally, we can begin adding and testing more complex keys or test more complex input melodies with the common keys.                                                                                 |
+| SRS-06 | The speaker shall correctly output the transposition melody. We will test on the same types of inputs as the transposition algorithm and in similar order.                                                                               |
 | SRS-07 | The screen should correctly display the names of the notes from the transposed melody in a readable format, so the user can try to play the transposed melody on the keyboard if they so choose.                                                                                |
-| SRS-08 | The screen should display the transcribed notes and the speaker will play the frequencies of the transcribed notes simultaneously.                                                                                |                                                                           
+| SRS-08 | The screen should display the transposed notes and the speaker will play the frequencies of the transposed notes simultaneously.                                                                                |                                                                           
 
 ### 6. Hardware Requirements Specification (HRS)
 
@@ -125,12 +125,13 @@ The constraint is just enough space on the workbench.
 
 - We ordered our BOM and are currently waiting on part arrivals.
 - We made some updates to our firmware to configure the LCD screen to the needs of our project. **@GARRETT maybe elaborate here and push the code to the repo. It seems like they're gonna be looking for git commits**
-- Researched the MIDI keyboard input protocol and brainstormed the flow of our program. We made a detailed pseudocode outline, so that we have a better idea of how to plan and modularize our code: **@MELINA attach link to pseudocode script here**
-- Implemented transcription algorithm? **MIGHT NOT INCLUDE THIS**
+- Researched the MIDI keyboard input protocol and brainstormed the flow of our program, in regards to reading in and sounding the notes. We made a detailed pseudocode outline, so that we have a better idea of how to plan and modularize our code: [read_in_pseudocode.txt](read_in_pseudocode.txt)
+- Implemented transposing algorithm: [transpose.c](transpose.c)
+   - It currently stands independently from the rest of the implementation (just to get the theory down), but we will modify our note representations and function inputs to comply with the rest of our system in our next sprint.
 
 ### Current state of project
 
-We currently have a detailed flow of our system that takes into account the specific inputs and outputs of the parts that we ordered and the parts we intend to use. This puts us in a good position for our hardware implementation and for our next immediate goal, which is to prototype and test our transcription/scaling algorithm with the buttons and buzzers that are provided by Detkin. Additionally, parts have been ordered and are in shipment.
+We currently have a detailed flow of our system that takes into account the specific inputs and outputs of the parts that we ordered and the parts we intend to use. This puts us in a good position for our hardware implementation and for our next immediate goal, which is to prototype and test our transposition/scaling algorithm with the buttons and buzzers that are provided by Detkin. Additionally, parts have been ordered and are in shipment.
 
 ### Next week's plan
 
@@ -139,10 +140,10 @@ We currently have a detailed flow of our system that takes into account the spec
    - Person(s): Garrett
    - Definition of "done": **@GARRETT you probably have a better idea of this than I do**
 
-- Test inputting the current key and desired key on a set of buttons (Detkin parts). Test the transcription and outputting the melody on Detkin buzzers. The inputted melodies will be hardcoded for now.
+- Test inputting the current key and desired key on a set of buttons (Detkin parts). Test the transposition and outputting the melody on Detkin buzzers. The inputted melodies will be hardcoded for now.
    - Estimated time: 1 week
    - Person(s): Nikolas and Melina
-   - Definition of "done": Successful and accurate output of a transcribed melody on a buzzer. Alternatively, if we run into a lot of debugging, document this, with clear recognition of the problem and the next steps that need to be taken to mitigate the problem.
+   - Definition of "done": Successful and accurate output of a transposition melody on a buzzer. Alternatively, if we run into a lot of debugging, document this, with clear recognition of the problem and the next steps that need to be taken to mitigate the problem.
 
 ## Sprint Review #2
 
