@@ -123,9 +123,26 @@ The constraint is just enough space on the workbench.
 
 ### Last week's progress
 
+- We ordered our BOM and are currently waiting on part arrivals.
+- We made some updates to our firmware to configure the LCD screen to the needs of our project. **@GARRETT maybe elaborate here and push the code to the repo. It seems like they're gonna be looking for git commits**
+- Researched the MIDI keyboard input protocol and brainstormed the flow of our program. We made a detailed pseudocode outline, so that we have a better idea of how to plan and modularize our code: **@MELINA attach link to pseudocode script here**
+- Implemented transcription algorithm? **MIGHT NOT INCLUDE THIS**
+
 ### Current state of project
 
+We currently have a detailed flow of our system that takes into account the specific inputs and outputs of the parts that we ordered and the parts we intend to use. This puts us in a good position for our hardware implementation and for our next immediate goal, which is to prototype and test our transcription/scaling algorithm with the buttons and buzzers that are provided by Detkin. Additionally, parts have been ordered and are in shipment.
+
 ### Next week's plan
+
+- Investigate the MIDI keyboard datasheet and other relevant resources to clarify the serial communication protocol. Make the necessary adjustments in code.
+   - Estimated time: 1 week
+   - Person(s): Garrett
+   - Definition of "done": **@GARRETT you probably have a better idea of this than I do**
+
+- Test inputting the current key and desired key on a set of buttons (Detkin parts). Test the transcription and outputting the melody on Detkin buzzers. The inputted melodies will be hardcoded for now.
+   - Estimated time: 1 week
+   - Person(s): Nikolas and Melina
+   - Definition of "done": Successful and accurate output of a transcribed melody on a buzzer. Alternatively, if we run into a lot of debugging, document this, with clear recognition of the problem and the next steps that need to be taken to mitigate the problem.
 
 ## Sprint Review #2
 
