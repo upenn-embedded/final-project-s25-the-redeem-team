@@ -1,17 +1,18 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/WXeqVgks)
+
 # Music to my Ears
 
 * Team Number: 17
 * Team Name: The Redeem Team
 * Team Members: Garrett Kirsch, Nikolaos Rapanis, Melina Daniilidis
 * GitHub Repository URL: https://github.com/upenn-embedded/final-project-s25-the-redeem-team.git
-* GitHub Pages Website URL: 
+* GitHub Pages Website URL:
 
 ## Final Project Proposal
 
 ### 1. Abstract
 
-This project is a music transposer: it takes in a melody played on an electric piano, converts it to a key and octave of your choosing, then plays it back to the user for quick testing. 
+This project is a music transposer: it takes in a melody played on an electric piano, converts it to a key and octave of your choosing, then plays it back to the user for quick testing.
 
 ### 2. Motivation
 
@@ -24,6 +25,7 @@ Key benefits: quick testing of new ideas, easy accessibility to people without m
 ### 3. System Block Diagram
 
 Critical Components: (likely will not need power regulation circuits)
+
 - Electric piano
 - Atmega328PB
 - Video Display
@@ -49,28 +51,27 @@ Here, you will define any special terms, acronyms, or abbreviations you plan to 
 
 **5.2 Functionality**
 
-| ID     | Description                                                                                                                                                                                                              |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| SRS-01 | The user’s manual input of the current key (via button press) should be consistent with the notes of the inputted melody, i.e. we check that the notes of the inputted melody match the key signature of the manually inputted initial key. If they don’t match, an error message shall be displayed to the user, and perhaps a few compatible keys can be suggested by the system (this would be an advanced feature).                                                                                                                  |
-| SRS-02 | The notes from the input recording shall be cleaned and parsed accurately based on their frequencies. For initial testing, we will assume that one note is placed at a time (no chords) and the melody is not more than seven notes. Once it can parse this simple input successfully, we will incrementally test chords and more complex melodies.                                                                                                                                           |
-| SRS-03 | The screen display shall correctly depict the selected key and octave from the button presses. |
-| SRS-04 | The user shall not be able to select a desired key transposition that is not compatible with the key of the current melody (e.g. the user cannot select to transposition to a minor key if the inputted melody is in a major key).                                                                                 |
-| SRS-05 | The transposition algorithm shall correctly transposition the melody into the user’s desired key and octave. The validation for this will involve several stages of testing. First, we will test with a limited selection of keys (namely, the most common ones: C major, D major, G major, A major) and with one standard octave (C4). After we confirm that the algorithm can accurately transposition a few simple melodies with these common keys in C4, then we can gradually add one or two octaves (as many as the keyboard allows) and test. Finally, we can begin adding and testing more complex keys or test more complex input melodies with the common keys.                                                                                 |
-| SRS-06 | The speaker shall correctly output the transposition melody. We will test on the same types of inputs as the transposition algorithm and in similar order.                                                                               |
-| SRS-07 | The screen should correctly display the names of the notes from the transposed melody in a readable format, so the user can try to play the transposed melody on the keyboard if they so choose.                                                                                |
-| SRS-08 | The screen should display the transposed notes and the speaker will play the frequencies of the transposed notes simultaneously.                                                                                |                                                                           
+| ID     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SRS-01 | The user’s manual input of the current key (via button press) should be consistent with the notes of the inputted melody, i.e. we check that the notes of the inputted melody match the key signature of the manually inputted initial key. If they don’t match, an error message shall be displayed to the user, and perhaps a few compatible keys can be suggested by the system (this would be an advanced feature).                                                                                                                                                                                                                                                  |
+| SRS-02 | The notes from the input recording shall be cleaned and parsed accurately based on their frequencies. For initial testing, we will assume that one note is placed at a time (no chords) and the melody is not more than seven notes. Once it can parse this simple input successfully, we will incrementally test chords and more complex melodies.                                                                                                                                                                                                                                                                                                                        |
+| SRS-03 | The screen display shall correctly depict the selected key and octave from the button presses.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| SRS-04 | The user shall not be able to select a desired key transposition that is not compatible with the key of the current melody (e.g. the user cannot select to transposition to a minor key if the inputted melody is in a major key).                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| SRS-05 | The transposition algorithm shall correctly transposition the melody into the user’s desired key and octave. The validation for this will involve several stages of testing. First, we will test with a limited selection of keys (namely, the most common ones: C major, D major, G major, A major) and with one standard octave (C4). After we confirm that the algorithm can accurately transposition a few simple melodies with these common keys in C4, then we can gradually add one or two octaves (as many as the keyboard allows) and test. Finally, we can begin adding and testing more complex keys or test more complex input melodies with the common keys. |
+| SRS-06 | The speaker shall correctly output the transposition melody. We will test on the same types of inputs as the transposition algorithm and in similar order.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| SRS-07 | The screen should correctly display the names of the notes from the transposed melody in a readable format, so the user can try to play the transposed melody on the keyboard if they so choose.                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| SRS-08 | The screen should display the transposed notes and the speaker will play the frequencies of the transposed notes simultaneously.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 ### 6. Hardware Requirements Specification (HRS)
 
-| ID     | Description                                                                                                                        |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| HRS-01 | A mini electric piano will be used to provide inputs (i.e. music) that will then be processed by the atmega           |
-| HRS-02 | The mini-piano will also be used to output music - both the raw inputs and the transcribed outputs                   |
-| HRS-03 | 4 buttons will be used to choose the input key of the music. |
-| HRS-04 | 4 buttons will be used to choose the output key of the music   |
-| HRS-05 | A screen will be used to display the input key, output key, input octave, and output octave of the music.      |
-| HRS-06 | 2 buttons will be used to cycle through octaves.                   |
-
+| ID     | Description                                                                                                 |
+| ------ | ----------------------------------------------------------------------------------------------------------- |
+| HRS-01 | A mini electric piano will be used to provide inputs (i.e. music) that will then be processed by the atmega |
+| HRS-02 | The mini-piano will also be used to output music - both the raw inputs and the transcribed outputs          |
+| HRS-03 | 4 buttons will be used to choose the input key of the music.                                                |
+| HRS-04 | 4 buttons will be used to choose the output key of the music                                                |
+| HRS-05 | A screen will be used to display the input key, output key, input octave, and output octave of the music.   |
+| HRS-06 | 2 buttons will be used to cycle through octaves.                                                            |
 
 ### 7. Bill of Materials (BOM)
 
@@ -110,12 +111,12 @@ The constraint is just enough space on the workbench.
 
 *You've got limited time to get this project done! How will you plan your sprint milestones? How will you distribute the work within your team? Review the schedule in the final project manual for exact dates.*
 
-| Milestone  | Functionality Achieved | Distribution of Work |
-| ---------- | ---------------------- | -------------------- |
-| Sprint #1  | Input circuit works, we have connection between the piano and the MCU; UART works and we get response; Parsing notes and timings   | Nikolaos - Circuitry; Melina: UART enable communication and load the notes; Garrett: MIDI keyboard works + mock input test    |
-| Sprint #2  |  Transposition works and we are able to produce correct new frequencies; Timing works and buzzer (+ circuit) is able to produce notes.       |  Garrett & Melina - Timing logic; Nikolaos: being able to programme the output to the buzzer, programme switch, testing that everything works  |
-| MVP Demo   |   Everything works together maybe with some integration issues, but reliable input/output  |  All hands: Team works together to integrate the different parts each one made. We reharse and made sure we have a viable MVP |
-| Final Demo |   Final polish, potential UX enhancement (LEDs etc), edge cases, make sure everything works flawlessly         |    All hands work together because 6 eyes/ears are better than 2 in catching issues                 |
+| Milestone  | Functionality Achieved                                                                                                                | Distribution of Work                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sprint #1  | Input circuit works, we have connection between the piano and the MCU; UART works and we get response; Parsing notes and timings      | Nikolaos - Circuitry; Melina: UART enable communication and load the notes; Garrett: MIDI keyboard works + mock input test                   |
+| Sprint #2  | Transposition works and we are able to produce correct new frequencies; Timing works and buzzer (+ circuit) is able to produce notes. | Garrett & Melina - Timing logic; Nikolaos: being able to programme the output to the buzzer, programme switch, testing that everything works |
+| MVP Demo   | Everything works together maybe with some integration issues, but reliable input/output                                               | All hands: Team works together to integrate the different parts each one made. We reharse and made sure we have a viable MVP                 |
+| Final Demo | Final polish, potential UX enhancement (LEDs etc), edge cases, make sure everything works flawlessly                                  | All hands work together because 6 eyes/ears are better than 2 in catching issues                                                             |
 
 **This is the end of the Project Proposal section. The remaining sections will be filled out based on the milestone schedule.**
 
@@ -124,10 +125,11 @@ The constraint is just enough space on the workbench.
 ### Last week's progress
 
 - We ordered our BOM and are currently waiting on part arrivals.
-- We made some updates to our firmware to configure the LCD screen to the needs of our project. **@GARRETT maybe elaborate here and push the code to the repo. It seems like they're gonna be looking for git commits**
+- We made some updates to our firmware to configure the LCD screen to the needs of our project. Specifically, we wrote a function to display notes and another to display a measure in a designated portion of the screen. The notes appear in their proper place (as according to a treble clef).
+- Here is the [demo](https://drive.google.com/file/d/169JcFTD8fjD4u2a9C1NLxT9UxsVkZWuK/view?usp=sharing) of some of our graphics features.
 - Researched the MIDI keyboard input protocol and brainstormed the flow of our program, in regards to reading in and sounding the notes. We made a detailed pseudocode outline, so that we have a better idea of how to plan and modularize our code: [read_in_pseudocode.txt](read_in_pseudocode.txt)
 - Implemented transposing algorithm: [transpose.c](transpose.c)
-   - It currently stands independently from the rest of the implementation (just to get the theory down), but we will modify our note representations and function inputs to comply with the rest of our system in our next sprint.
+  - It currently stands independently from the rest of the implementation (just to get the theory down), but we will modify our note representations and function inputs to comply with the rest of our system in our next sprint.
 
 ### Current state of project
 
@@ -136,14 +138,15 @@ We currently have a detailed flow of our system that takes into account the spec
 ### Next week's plan
 
 - Investigate the MIDI keyboard datasheet and other relevant resources to clarify the serial communication protocol. Make the necessary adjustments in code.
-   - Estimated time: 1 week
-   - Person(s): Garrett
-   - Definition of "done": **@GARRETT you probably have a better idea of this than I do**
 
+  - Estimated time: 1 week
+  - Person(s): Garrett
+  - Definition of "done": Working demo of serial communication from the MIDI keyboard being converted into usable data. Piano to note in firmware would be ideal.
 - Test inputting the current key and desired key on a set of buttons (Detkin parts). Test the transposition and outputting the melody on Detkin buzzers. The inputted melodies will be hardcoded for now.
-   - Estimated time: 1 week
-   - Person(s): Nikolas and Melina
-   - Definition of "done": Successful and accurate output of a transposition melody on a buzzer. Alternatively, if we run into a lot of debugging, document this, with clear recognition of the problem and the next steps that need to be taken to mitigate the problem.
+
+  - Estimated time: 1 week
+  - Person(s): Nikolas and Melina
+  - Definition of "done": Successful and accurate output of a transposition melody on a buzzer. Alternatively, if we run into a lot of debugging, document this, with clear recognition of the problem and the next steps that need to be taken to mitigate the problem.
 
 ## Sprint Review #2
 

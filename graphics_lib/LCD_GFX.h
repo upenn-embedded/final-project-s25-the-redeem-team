@@ -34,5 +34,6 @@ void LCD_drawString(uint8_t x, uint8_t y, char* str, uint16_t fg, uint16_t bg);
 void LCD_drawMeasure(uint8_t x, uint8_t y, uint8_t length);
 void LCD_drawSharp(uint8_t x, uint8_t y, uint8_t length);
 void LCD_drawNote(char note, uint8_t sign);
+void LCD_drawNoteChar(char note);
 
 #endif /* LCD_GFX_H_ */
