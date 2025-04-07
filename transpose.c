@@ -1,6 +1,4 @@
-#include <stdio.h>
-
-#define NOTE_COUNT 12
+#include "transpose.h"
 
 // notes are represented as integers from 0 to 11 (C=0, C#=1, ..., B=11)
 // melody is an array of integers in that format
