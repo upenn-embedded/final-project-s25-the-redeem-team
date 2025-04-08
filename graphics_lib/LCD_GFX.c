@@ -12,7 +12,22 @@
  * Local Functions
  ******************************************************************************/
  
- 
+ const uint16_t A[16] = {0x0180,
+                         0x0240,
+                         0x0420,
+                         0x0810,
+                         0x1008,
+                         0x2004,
+                         0x4002,
+                         0xFFFF,
+                         0x8001,
+                         0x8001,   
+                         0x8001,
+                         0x8001,
+                         0x8001,
+                         0x8001,   
+                         0x8001,
+                         0x8001 };
  
  /******************************************************************************
  * Global Functions
@@ -91,7 +106,7 @@
  * @brief		Draw a line from and to a point with a color
  * @note
  *****************************************************************************/
- void LCD_drawLine(short x0,short y0,short x1,short y1,uint16_t c)
+ void LCD_drawLine(short x0,short y0,short x1,short y1, uint16_t c)
  {
      // Fill this out
      float slope, i, j, dx, dy;
@@ -134,14 +149,14 @@
  * @brief		Draw a colored block at coordinates
  * @note
  *****************************************************************************/
- void LCD_drawBlock(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,uint16_t color)
- {
-     // Fill this out
-     LCD_setAddr(x0, y0, x1, y1);
-     for (int i = 0; i < (x1 - x0 + 1) * (y1 - y0 + 1); i++) { // iterate over total num of pixels, start from 0 and end at number - 1.
-         SPI_ControllerTx_16bit(color);
-     }
- }
+ //void LCD_drawBlock(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,uint16_t color)
+ //{
+ //	// Fill this out
+ //    LCD_setAddr(x0, y0, x1, y1);
+ //    for (int i = 0; i < (x1 - x0 + 1) * (y1 - y0 + 1); i++) { // iterate over total num of pixels, start from 0 and end at number - 1.
+ //        SPI_ControllerTx_16bit(color);
+ //    }
+ //}
  
  /**************************************************************************//**
  * @fn			void LCD_setScreen(uint16_t color)
@@ -165,21 +180,21 @@
  * @brief		Draw a string starting at the point with foreground and background colors
  * @note
  *****************************************************************************/
- void LCD_drawString(uint8_t x, uint8_t y, char* str, uint16_t fg, uint16_t bg)
- {
-     // Fill this out
-     uint8_t xCurr = x;
-     while (*str != '\0') {
-         LCD_drawChar(xCurr, y, *str, fg, bg);
-         if (*str != ' ') { // don't need to give as much space to spaces.
-             xCurr += 6;
-         } else {
-             xCurr += 4;
-         }
-         str++;
-         
-     }
- }
+ //void LCD_drawString(uint8_t x, uint8_t y, char* str, uint16_t fg, uint16_t bg)
+ //{
+ //	// Fill this out
+ //    uint8_t xCurr = x;
+ //    while (*str != '\0') {
+ //        LCD_drawChar(xCurr, y, *str, fg, bg);
+ //        if (*str != ' ') { // don't need to give as much space to spaces.
+ //            xCurr += 6;
+ //        } else {
+ //            xCurr += 4;
+ //        }
+ //        str++;
+ //        
+ //    }
+ //}
  
  void LCD_drawMeasure(uint8_t x, uint8_t y, uint8_t length) {
      uint8_t i, j;
@@ -250,20 +265,42 @@
      uint8_t i = note - 0x40;
      
      // draw circle in the middle of the screen
-     LCD_drawCircle(95 + i * 5, LCD_HEIGHT >> 1, 5, BLACK);
+     LCD_drawCircle(90 + i * 5, LCD_HEIGHT >> 1, 5, BLACK);
      
      // draw line up the side
-     LCD_setAddr(95 + i * 5, (LCD_HEIGHT >> 1) + 5, 95 + i * 5 + 24, (LCD_HEIGHT >> 1) + 5);
+     LCD_setAddr(90 + i * 5, (LCD_HEIGHT >> 1) + 5, 90 + i * 5 + 24, (LCD_HEIGHT >> 1) + 5);
      
      for (i = 0; i < 25; i ++) {
          SPI_ControllerTx_16bit(BLACK);
      }
  }
  void LCD_drawNoteChar(char note) {
-     if (note == 'A') {
-         LCD_drawLine(20, (LCD_HEIGHT >> 1) + 10, 40, (LCD_HEIGHT >> 1), BLACK);
-         LCD_drawLine(40, (LCD_HEIGHT >> 1), 20, (LCD_HEIGHT >> 1) - 10, BLACK);
-         LCD_drawLine(32, (LCD_HEIGHT >> 1) + 3, 32, (LCD_HEIGHT >> 1) - 3, BLACK);
+ //    if (note == 'A') {
+ //        LCD_drawLine(40, (LCD_HEIGHT >> 1), 20, (LCD_HEIGHT >> 1) + 10, BLACK);
+ //        LCD_drawLine(20, (LCD_HEIGHT >> 1) - 10, 40, (LCD_HEIGHT >> 1), BLACK);
+ //        LCD_drawLine(30, (LCD_HEIGHT >> 1) - 4, 30, (LCD_HEIGHT >> 1) + 4, BLACK);
+ //    }
+     int i, j;
+     uint16_t* character;
+     switch (note) {
+         case 'A': character = A;
      }
+     
+     for (i = 0; i < 16; i ++) {
+         for (j = 0; j < 16; j ++) {
+             if (A[i] & (1 << j) != 0) {
+                 //  fill in 2x2 pixel block
+                 LCD_setAddr(50 - 2*i, 48 + (j << 1), 51 - 2*i, 49 + (j << 1));
+                 SPI_ControllerTx_16bit(BLACK);
+                 SPI_ControllerTx_16bit(BLACK);
+                 SPI_ControllerTx_16bit(BLACK);
+                 SPI_ControllerTx_16bit(BLACK);
+                 
+             }
+         }
+     }
+             
+     
+     
      return;
  }
