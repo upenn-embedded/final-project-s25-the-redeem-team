@@ -1,22 +1,14 @@
 #include "transpose.h"
 
-// notes are represented as integers from 0 to 11 (C=0, C#=1, ..., B=11)
-// melody is an array of integers in that format
-
-// transpose one note
-int transpose_note(int note, int shift) {
-    return (note + shift + NOTE_COUNT) % NOTE_COUNT;
-}
-
-// transpose entire melody from one key to another
-void transpose_melody(int *melody, int length, int curr_key, int target_key) {
-    int shift = (target_key - curr_key + NOTE_COUNT) % NOTE_COUNT;
+// Transpose a melody of MIDI notes from one key to another
+void transpose_melody(int *melody, int length, int currentKey, int targetKey) {
+    int shift = (targetKey - currentKey);
     for (int i = 0; i < length; i++) {
-        melody[i] = transpose_note(melody[i], shift);
+        melody[i] += shift;
     }
 }
 
-// helper func to print the melody
+// Helper to print MIDI notes as note names (C4, D#4, etc.)
 void print_melody(int *melody, int length) {
     const char *note_names[NOTE_COUNT] = {
         "C", "C#", "D", "D#", "E", "F",
@@ -24,24 +16,29 @@ void print_melody(int *melody, int length) {
     };
 
     for (int i = 0; i < length; i++) {
-        printf("%s ", note_names[melody[i]]);
+        int note = melody[i];
+        int pitch_class = note % 12;
+        int octave = (note / 12) - 1; // MIDI octave system
+        printf("%s%d ", note_names[pitch_class], octave);
     }
     printf("\n");
 }
 
+// Example usage
 int main() {
-    int melody[] = {0, 2, 4, 5, 7, 9, 11}; // C major scale
+    int melody[] = {60, 62, 64, 65, 67, 69, 71, 72}; // C4 to C5 (C major scale)
     int length = sizeof(melody) / sizeof(melody[0]);
-    int curr_key = 0; // C
-    int target_key = 2;  // D
+    int currentKey = 60; // C4
+    int targetKey = 62;  // D4
 
-    printf("Original melody: ");
+    printf("Original MIDI melody: ");
     print_melody(melody, length);
 
-    transpose_melody(melody, length, curr_key, target_key);
+    transpose_melody(melody, length, currentKey % 12, targetKey % 12);
 
-    printf("Transposed melody: ");
+    printf("Transposed MIDI melody: ");
     print_melody(melody, length);
 
     return 0;
 }
+
