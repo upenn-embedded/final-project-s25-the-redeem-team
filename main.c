@@ -32,15 +32,6 @@
  }
  
  
- //void drawNote(char note, uint8_t sign) {
- //    // i maps A -> 1, B -> 2, ...
- //    uint8_t i = note - 0x40;
- //    
- //    // draw circle in the middle of the screen
- //    LCD_drawCircle(95 + i * 5, LCD_HEIGHT >> 1, 5, BLACK);
- //    
- //    
- //}
  
  int main(void)
  {
@@ -50,61 +41,59 @@
          
      while (1) 
      {
-         LCD_drawNote('A', 0);
+         LCD_drawNote('A', 1);
+         
+         _delay_ms(1000);
+         
+         
+         LCD_clearScreen();
+         LCD_drawMeasure();
+         
+         LCD_drawNote('B', 2);
          
          
          _delay_ms(1000);
          
-         LCD_setScreen(WHITE);
-         LCD_drawMeasure(80, 24, 80);
+         LCD_clearScreen();
+         LCD_drawMeasure();
          
-         LCD_drawNote('B', 0);
-         
-         
-         _delay_ms(1000);
-         
-         LCD_setScreen(WHITE);
-         LCD_drawMeasure(80, 24, 80);
-         
-         LCD_drawNote('C', 0);
+         LCD_drawNote('C', 1);
          
          
          _delay_ms(1000);
          
-         LCD_setScreen(WHITE);
-         LCD_drawMeasure(80, 24, 80);
+         LCD_clearScreen();
+         LCD_drawMeasure();
          
-         LCD_drawNote('D', 0);
+         LCD_drawNote('D', 2);
+         
+         _delay_ms(1000);
+         
+         LCD_clearScreen();
+         LCD_drawMeasure();
+         
+         LCD_drawNote('E', 1);
          
          
          _delay_ms(1000);
          
-         LCD_setScreen(WHITE);
-         LCD_drawMeasure(80, 24, 80);
+         LCD_clearScreen();
+         LCD_drawMeasure();
          
-         LCD_drawNote('E', 0);
-         
-         
-         _delay_ms(1000);
-         
-         LCD_setScreen(WHITE);
-         LCD_drawMeasure(80, 24, 80);
-         
-         LCD_drawNote('F', 0);
+         LCD_drawNote('F', 2);
          
          
          _delay_ms(1000);
          
-         LCD_setScreen(WHITE);
-         LCD_drawMeasure(80, 24, 80);
+         LCD_clearScreen();
+         LCD_drawMeasure();
          
-         LCD_drawNote('G', 0);
-         
+         LCD_drawNote('G', 1);
          
          _delay_ms(1000);
          
-         LCD_setScreen(WHITE);
-         LCD_drawMeasure(80, 24, 80);
+         LCD_clearScreen();
+         LCD_drawMeasure();
      }
  }
  

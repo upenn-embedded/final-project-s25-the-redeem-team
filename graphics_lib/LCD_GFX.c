@@ -12,6 +12,8 @@
  * Local Functions
  ******************************************************************************/
  
+ 
+ 
  const uint16_t A[16] = {0x0180,
                          0x0240,
                          0x0420,
@@ -28,6 +30,142 @@
                          0x8001,   
                          0x8001,
                          0x8001 };
+ 
+ const uint16_t B[16] = {
+     0xFFFC,
+     0x8002,
+     0x8001,
+     0x8001,
+     0x8002,
+     0x8004,
+     0x8008,
+     0xFFF0,
+     0x8008,
+     0x8004,
+     0x8002,
+     0x8001,
+     0x8001,
+     0x8001,
+     0x8002,
+     0xFFFC
+ };
+ 
+ const uint16_t C[16] = {
+     0x07F8,
+     0x1806,
+     0x2001,
+     0x4000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x4000,
+     0x2001,
+     0x1806,
+     0x07F8,
+     0x0000,
+     0x0000
+ };
+ 
+ const uint16_t D[16] = {
+     0xFFF8,
+     0x8006,
+     0x8001,
+     0x8001,
+     0x8001,
+     0x8001,
+     0x8001,
+     0x8001,
+     0x8001,
+     0x8001,
+     0x8001,
+     0x8001,
+     0x8001,
+     0x8006,
+     0xFFF8,
+     0x0000
+ };
+ 
+ const uint16_t E[16] = {
+     0xFFFF,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0xFFFC,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0xFFFF
+ };
+ 
+ const uint16_t F[16] = {
+     0xFFFF,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0xFFFC,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000
+ };
+ 
+ const uint16_t G[16] = {
+     0x07F8,
+     0x1806,
+     0x2001,
+     0x4000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x8000,
+     0x807F,
+     0x8001,
+     0x8001,
+     0x4001,
+     0x2001,
+     0x1802,
+     0x07FC,
+     0x0000
+ };
+ 
+ const uint8_t FLAT[8] = {
+     0x10, // ___X____
+     0x10, // ___X____
+     0x10, // ___X____
+     0x1C, // ___XXX__
+     0x12, // ___X__X_
+     0x12, // ___X__X_
+     0x1C, // ___XXX__
+     0x00  // ________
+ };
+ 
+ const uint8_t SHARP[8] = {
+     0x24, // __X__X__
+     0x24, // __X__X__
+     0x7E, // _XXXXXX_
+     0x24, // __X__X__
+     0x24, // __X__X__
+     0x7E, // _XXXXXX_
+     0x24, // __X__X__
+     0x24  // __X__X__
+ };
  
  /******************************************************************************
  * Global Functions
@@ -53,28 +191,6 @@
      SPI_ControllerTx_16bit(color);
  }
  
- /**************************************************************************//**
- * @fn			void LCD_drawChar(uint8_t x, uint8_t y, uint16_t character, uint16_t fColor, uint16_t bColor)
- * @brief		Draw a character starting at the point with foreground and background colors
- * @note
- *****************************************************************************/
- void LCD_drawChar(uint8_t x, uint8_t y, uint16_t character, uint16_t fColor, uint16_t bColor){
-     uint16_t row = character - 0x20;		//Determine row of ASCII table starting at space
-     int i, j;
-     if ((LCD_WIDTH-x>7)&&(LCD_HEIGHT-y>7)){
-         for(i=0;i<5;i++){
-             uint8_t pixels = ASCII[row][i]; //Go through the list of pixels
-             for(j=0;j<8;j++){
-                 if ((pixels>>j)&1==1){
-                     LCD_drawPixel(x+i,y+j,fColor);
-                 }
-                 else {
-                     LCD_drawPixel(x+i,y+j,bColor);
-                 }
-             }
-         }
-     }
- }
  
  
  /******************************************************************************
@@ -99,49 +215,6 @@
          }
      }
  }
- 
- 
- /**************************************************************************//**
- * @fn			void LCD_drawLine(short x0,short y0,short x1,short y1,uint16_t c)
- * @brief		Draw a line from and to a point with a color
- * @note
- *****************************************************************************/
- void LCD_drawLine(short x0,short y0,short x1,short y1, uint16_t c)
- {
-     // Fill this out
-     float slope, i, j, dx, dy;
-     i = x0;
-     j = y0;
- 
-     if (x1 == x0) {
-         dx = 0;
-         
-         dy = (y1 > y0) ? 1 : -1;
-     } else if (y1 == y0) {
-         dx = (x1 > x0) ? 1 : -1;
-         dy = 0;
-     } else {
-         slope = (float) (y1 - y0)/(x1 - x0);
-     
-         // check if slope if < 1
-         if (-1 < slope < 1) {
-             dx = 1;
-             dy = slope;
-         } else {
-             dx = 1 / slope;
-             dy = 1;
-         }
-     }
- 
-     
-     while (!((int) i == x1 && (int) j == y1)) {
-         LCD_drawPixel((int) i, (int) j, c);
-         i += dx;
-         j += dy;
-     }
- 
- }
- 
  
  
  /**************************************************************************//**
@@ -180,87 +253,30 @@
  * @brief		Draw a string starting at the point with foreground and background colors
  * @note
  *****************************************************************************/
- //void LCD_drawString(uint8_t x, uint8_t y, char* str, uint16_t fg, uint16_t bg)
- //{
- //	// Fill this out
- //    uint8_t xCurr = x;
- //    while (*str != '\0') {
- //        LCD_drawChar(xCurr, y, *str, fg, bg);
- //        if (*str != ' ') { // don't need to give as much space to spaces.
- //            xCurr += 6;
- //        } else {
- //            xCurr += 4;
- //        }
- //        str++;
- //        
- //    }
- //}
  
- void LCD_drawMeasure(uint8_t x, uint8_t y, uint8_t length) {
+ 
+ void LCD_drawMeasure() {
      uint8_t i, j;
+ 
+     // x = 80
+     // y = 24
+     // length = 80
      
      // x and y are the bottom left corner - []
      for (i = 0; i < 5; i ++) {
-         LCD_setAddr(x + i * 10, y, x + i * 10, y - length);
+         LCD_setAddr(80 + i * 10, 24, 80 + i * 10, 104);
          // fill in data
-         for (j = 0; j < length; j ++) {
+         for (j = 0; j <= 80; j ++) {
              SPI_ControllerTx_16bit(BLACK);
          }
      }
      
  }
  
- void LCD_drawSharp(uint8_t x, uint8_t y, uint8_t length) {
-     uint8_t i, j, quarter, three_quarters;
-     
-     quarter = length / 3;
-     three_quarters = quarter << 1;
-     
-     
-     // x and y are the bottom left corner
-     
-     // left vertical line at y + length/4
-     
-     LCD_setAddr(x, y + quarter, x + length, y + quarter);
-     
-     for (i = 0; i < length; i ++) {
-         SPI_ControllerTx_16bit(BLACK);
-     }
-     
-     // right vertical line at y + 3 * length / 4
-     
-     LCD_setAddr(x, y + three_quarters, x + length, y + three_quarters);
-     
-     for (i = 0; i < length; i ++) {
-         SPI_ControllerTx_16bit(BLACK);
-     }
-     
-     // top horizontal line at x + 3 * length / 4
-     
-     LCD_setAddr(x + three_quarters, y, x + three_quarters, y + length);
-     
-     for (i = 0; i < length; i ++) {
-         SPI_ControllerTx_16bit(BLACK);
-     }
-     
-     // bottom horizontal line at x + length / 4
-     
-     LCD_setAddr(x + quarter, y, x + quarter, y + length);
-     
-     for (i = 0; i < length; i ++) {
-         SPI_ControllerTx_16bit(BLACK);
-     }
-     
- //    // top slanted horizontal line from (x + length / 2, y) to (x + 3 * length / 4, y + length)
- //    LCD_drawLine(x + (length >> 1), y, x + 3* (length >> 2), y + length, BLACK); 
- //    
- //    
- //    // bottom slanted horizontal line from (x + length / 4, y) to (x +  length / 2, y + length)
- //    LCD_drawLine(x + (length >> 2), y, x + (length >> 1), y + length, BLACK); 
-     
- }
  
  void LCD_drawNote(char note, uint8_t sign) {
+     
+     
      // i maps A -> 1, B -> 2, ...
      uint8_t i = note - 0x40;
      
@@ -273,34 +289,118 @@
      for (i = 0; i < 25; i ++) {
          SPI_ControllerTx_16bit(BLACK);
      }
+     LCD_drawNoteChar(note);
+     LCD_drawSign(note, sign);
  }
+ 
  void LCD_drawNoteChar(char note) {
- //    if (note == 'A') {
- //        LCD_drawLine(40, (LCD_HEIGHT >> 1), 20, (LCD_HEIGHT >> 1) + 10, BLACK);
- //        LCD_drawLine(20, (LCD_HEIGHT >> 1) - 10, 40, (LCD_HEIGHT >> 1), BLACK);
- //        LCD_drawLine(30, (LCD_HEIGHT >> 1) - 4, 30, (LCD_HEIGHT >> 1) + 4, BLACK);
- //    }
-     int i, j;
+     uint8_t i, j;
      uint16_t* character;
+ 
      switch (note) {
-         case 'A': character = A;
+         case 'A': character = A; break;
+         case 'B': character = B; break;
+         case 'C': character = C; break;
+         case 'D': character = D; break;
+         case 'E': character = E; break;
+         case 'F': character = F; break;
+         case 'G': character = G; break;
+         default: return;  // Unknown character
      }
      
-     for (i = 0; i < 16; i ++) {
-         for (j = 0; j < 16; j ++) {
-             if (A[i] & (1 << j) != 0) {
-                 //  fill in 2x2 pixel block
-                 LCD_setAddr(50 - 2*i, 48 + (j << 1), 51 - 2*i, 49 + (j << 1));
+ 
+     for (i = 0; i < 16; i++) {
+         for (j = 0; j < 16; j++) {
+             if ((character[i] & (1 << (15 - j))) != 0) {
+                 LCD_setAddr(50 - (i << 1), 48 + (j << 1), 51 - (i << 1), 49 + (j << 1));
                  SPI_ControllerTx_16bit(BLACK);
                  SPI_ControllerTx_16bit(BLACK);
                  SPI_ControllerTx_16bit(BLACK);
                  SPI_ControllerTx_16bit(BLACK);
-                 
              }
          }
      }
-             
+ }
+ 
+ void LCD_drawSign(char note, uint8_t sign) {
+     uint8_t i, j;
+     uint8_t* sign_array;
      
+     uint8_t k = note - 0x40;
+ 
+     switch (sign) {
+         case 1: sign_array = SHARP; break;
+         case 2: sign_array = FLAT; break;
+         default: return;  // Unknown symbol
+     }
+ 
+     // Adjust base positions appropriately for your layout:
+     uint8_t base_x = 50; // Left of your character
+     uint8_t base_y = 30; // Vertical position aligned with character
+ 
+     // DRAW SIGN ON CHAR
+     for (i = 0; i < 8; i++) {
+         for (j = 0; j < 8; j++) {
+             if ((sign_array[i] & (1 << (7 - j))) != 0) {
+                 // Notice how 'i' controls vertical (y), 'j' controls horizontal (x)
+                 LCD_setAddr(base_x - (i << 1), base_y + (j << 1),
+                             base_x - (i << 1) + 1, base_y + (j << 1) + 1);
+                 SPI_ControllerTx_16bit(BLACK);
+                 SPI_ControllerTx_16bit(BLACK);
+                 SPI_ControllerTx_16bit(BLACK);
+                 SPI_ControllerTx_16bit(BLACK);
+             }
+         }
+     }
+     
+     
+     // DRAW SIGN ON NOTE
+     base_x = 98 + k * 5; // Left of your character
+     base_y = 45;
+     
+     for (i = 0; i < 8; i++) {
+         for (j = 0; j < 8; j++) {
+             if ((sign_array[i] & (1 << (7 - j))) != 0) {
+                 // Notice how 'i' controls vertical (y), 'j' controls horizontal (x)
+                 LCD_setAddr(base_x - (i << 1), base_y + (j << 1),
+                             base_x - (i << 1) + 1, base_y + (j << 1) + 1);
+                 SPI_ControllerTx_16bit(BLACK);
+                 SPI_ControllerTx_16bit(BLACK);
+                 SPI_ControllerTx_16bit(BLACK);
+                 SPI_ControllerTx_16bit(BLACK);
+             }
+         }
+     }
+ }
+ 
+ void LCD_clearScreen() {
+     uint16_t i;
+     // clear measure
+ //    for (i = 0; i < 5; i ++) {
+ //        LCD_setAddr(80 + (i << 2) + i, 24, 80 + (i << 2) + i, 104);
+ //        for (j = 0; j <= 80; j ++) {
+ //            SPI_ControllerTx_16bit(WHITE);
+ //        }
+ //    }
+     // clear note 
+     LCD_setAddr(89, 47, 149, 69);
+     
+     for (i = 0; i < 1403; i ++) {
+         SPI_ControllerTx_16bit(WHITE);
+     }
+     
+     // clear character
+     LCD_setAddr(20, 48, 51, 79);
+     for (i = 0; i < 1024; i ++) {
+         SPI_ControllerTx_16bit(WHITE);
+     }
+     // clear sign
+     LCD_setAddr(36, 30, 51, 45);
+     for (i = 0; i < 256; i ++) {
+         SPI_ControllerTx_16bit(WHITE);
+     }
      
      return;
  }
+ 
+ 
