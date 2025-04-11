@@ -152,9 +152,17 @@ We currently have a detailed flow of our system that takes into account the spec
 
 ### Last week's progress
 
+We did not get an input part yet. We worked on finalising the complicated graphics library.
+
+Also on newmain.c we have the working code to play a hardcoded song in the buzzer and on transpose.c we have the transposition.
+
+Here is the video of our waveforms created by the code playing ode to joy.https://drive.google.com/file/d/1AhIZyFT9VgZigyaGORM7vLKSet8ms8ak/view?usp=sharing
+
 ### Current state of project
 
 ### Next week's plan
+
+Get the MVP done which means that we handle the input and tie all of the things together.
 
 ## MVP Demo
 
