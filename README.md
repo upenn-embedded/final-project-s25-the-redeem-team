@@ -152,17 +152,23 @@ We currently have a detailed flow of our system that takes into account the spec
 
 ### Last week's progress
 
-We did not get an input part yet. We worked on finalising the complicated graphics library.
-
-Also on newmain.c we have the working code to play a hardcoded song in the buzzer and on transpose.c we have the transposition.
-
-Here is the video of our waveforms created by the code playing ode to joy.https://drive.google.com/file/d/1AhIZyFT9VgZigyaGORM7vLKSet8ms8ak/view?usp=sharing
+- We've received most of our parts and will be able to test the piano communication next Monday.
+- We finished the graphics libary for our visual outputs (Notes, measures, sharp/flat) and it is very fast!
+- In newmain.c we have the working code to play a hardcoded song in the buzzer.
+- In transpose.c we have the transposition code.
+- Here is the video of our waveforms created by the code playing [ode to joy](https://drive.google.com/file/d/1AhIZyFT9VgZigyaGORM7vLKSet8ms8ak/view?usp=sharing)
+- Here is a video of our updated [graphics](https://drive.google.com/file/d/1_4paKi2MuRkafrC5hor_PraNmNgu-Otv/view?usp=sharing).
 
 ### Current state of project
 
+Unfortunately, we have not been able to test the core input to our system - the piano. So far all we've been able to do is work on the peripherals, but we need all our parts to make real progress on the project. We are confident, though, that when we get everything, all the work we've been doing will fall in place and we'll have a better picture of what needs to be done.
+
 ### Next week's plan
 
-Get the MVP done which means that we handle the input and tie all of the things together.
+- Get the piano input working and convert it into real audio.
+- Tranpose and inputed note into another key or shift it in some way that we can show proof of concept.
+- Make a small structure to house the product (maybe out of cardboard).
+- Output video to two separate screens on two separate ATMegas communicating together with UART.
 
 ## MVP Demo
 
