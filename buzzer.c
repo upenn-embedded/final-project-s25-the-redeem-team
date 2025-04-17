@@ -7,7 +7,7 @@
 
 #include "math.h"
 
-#include "transpose.h"
+// #include "transpose.h"
  
 #define BUZZER PD5
 
@@ -73,10 +73,10 @@ int main() {
         printf("Original MIDI melody: ");
         print_melody(melody, length);
 
-        transpose_melody(melody, length, currentKey % 12, targetKey % 12);
+        // transpose_melody(melody, length, currentKey % 12, targetKey % 12);
 
-        printf("Transposed MIDI melody: ");
-        print_melody(melody, length);
+        // printf("Transposed MIDI melody: ");
+        // print_melody(melody, length);
 
         // frequency stuff:
         int* ocr_vals = find_ocr_vals(melody, 16, 256);
