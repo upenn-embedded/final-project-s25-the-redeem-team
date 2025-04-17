@@ -114,7 +114,7 @@
      }
  }
  
- bool initialise() {
+ bool Initialize() {
     //  melody[0] = (Note){64, 0, 5}; // mi (E4)
     //  melody[1] = (Note){64, 5, 5}; // mi (E4)
     //  melody[2] = (Note){65, 10, 5}; // fa (F4)

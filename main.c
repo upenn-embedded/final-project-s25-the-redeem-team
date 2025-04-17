@@ -175,6 +175,7 @@
 //          }
 //      }
 //  }
+// #endif
  
 
  void process_midi_message(uint8_t status, uint8_t data1, uint8_t data2) {
@@ -205,4 +206,3 @@ int main() {
 
     return 0;
 }
- #endif
