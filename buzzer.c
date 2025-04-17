@@ -237,8 +237,9 @@
  // initializer for buzzer
  void InitializePWM() {     
      // initialize BUZZER
+     //cli();
      DDRD |= (1 << BUZZER); 
-     PORTD |= (1 << BUZZER);
+     PORTD &= ~(1 << BUZZER);
              
      // prescale (divide by 256)
      TCCR0B &= ~(1 << CS00);
@@ -250,9 +251,11 @@
      TCCR0A |= (1<<WGM00);
      TCCR0A &= ~(1<<WGM01);
      TCCR0B |= (1<<WGM02);
+     
+     TIMSK0 |= (1 << OCIE0A);
  
      // toggle OC0A on compare match
-     TCCR0A &= ~(1<<COM0B1);
+     TCCR0A |= (1<<COM0B1);
      TCCR0A |= (1<<COM0B0);
  
      // TOP value --> MOVE THIS TO MAIN
@@ -260,6 +263,7 @@
      // (need to halve this value for mode 5)
      // OCR0A = 35;
      uart_init();
+     //sei();
  }
  
  /* Takes in a MIDI note number and converts it to its frequency */
@@ -328,7 +332,7 @@
          int freq = freq_from_note(transp_melody[i]);
          int ocr_val = (62500) / (2*freq);
          printf("ocr val before dividing: %d\n", ocr_val);
-         ocr_arr[i] = ocr_val / 2; // need to halve it because we're in mode 5
+         ocr_arr[i] = ocr_val; // need to halve it because we're in mode 5
          printf("Freq: %d\n", freq);
      }
      
@@ -351,8 +355,8 @@
  int main() {
      InitializePWM();
      while(1) {
-         int melody[] = {60}; // C4 to C5 (C major scale)
-         int length = 1;
+         int melody[] = {60, 61, 62, 63, 64, 65, 66, 67}; // C4 to C5 (C major scale)
+         int length = 8;
  //        int currentKey = 60; // C4
  //        int targetKey = 62;  // D4
  
@@ -370,7 +374,8 @@
          
          find_ocr_vals(melody, ocr_arr, transp_len);
          for (int i = 0; i < length; i++) {
-             OCR0B = ocr_arr[i];
+             OCR0A = ocr_arr[i];
+             OCR0B = OCR0A / 2;
              printf("OCR0A Value: %d\n", OCR0A);
              _delay_ms(500);
          }
