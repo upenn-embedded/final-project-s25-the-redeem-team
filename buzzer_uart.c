@@ -172,7 +172,10 @@
 //  }
  
  uint8_t OCR0B_from_freq(uint16_t freq) {
-     return (uint8_t) ((round(F_CPU / (2 * 256 * freq))) / 2); // need to halve it because we're in mode 5
+    if (freq == 440) {
+        return 35;
+    }
+    return (uint8_t) ((round(16000000 / (2 * 256 * freq))) / 2); // need to halve it because we're in mode 5
  }
 
  
