@@ -351,22 +351,42 @@
      }
      printf("\n");
  }
+
+ void process_midi_message(uint8_t status, uint8_t data1, uint8_t data2) {
+    uint8_t command = status & 0xF0; // Mask channel
+
+    if (command == 0x90 && data2 > 0) {
+        printf("Note ON: %d\n", data1);
+    } else if ((command == 0x80) || (command == 0x90 && data2 == 0)) {
+        printf("Note OFF: %d\n", data1);
+    } else {
+        printf("Unhandled MIDI message: %02X %02X %02X\n", status, data1, data2);
+    }
+}
  // call helpers from transpose
  int main() {
      InitializePWM();
+    uint8_t status, data1, data2;
+
      while(1) {
-         int melody[] = {60, 61, 62, 63, 64, 65, 66, 67}; // C4 to C5 (C major scale)
-         int length = 8;
+        status = uart_receive(NULL);
+        data1 = uart_receive(NULL);
+        data2 = uart_receive(NULL);
+        int melody[] = {data1}; // C4 to C5 (C major scale)
+        int length = 8;
  //        int currentKey = 60; // C4
  //        int targetKey = 62;  // D4
  
-         printf("Original MIDI melody: ");
-         print_melody(melody, length);
+        //  printf("Original MIDI melody: ");
+        //  print_melody(melody, length);
  
          // transpose_melody(melody, length, currentKey % 12, targetKey % 12);
  
          // printf("Transposed MIDI melody: ");
          // print_melody(melody, length);
+
+        
+        process_midi_message(status, data1, data2);
  
          // frequency stuff:
          uint8_t transp_len = length;
