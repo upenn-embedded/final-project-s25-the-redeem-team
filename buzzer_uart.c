@@ -135,30 +135,51 @@
 
     uart_init();
  
-     // Timer0 setup
-     TCCR0A = (1 << WGM01); // Set to CTC mode
-     TCCR0B = (1 << CS02); // Set prescaler to 256
-     TCNT0 = 0; // Initialize counter
-     TIMSK0 = (1 << OCIE0A); // Enable timer interrupt
-     DDRD |= (1 << BUZZER); // Set buzzer pin as output
+     //-------- Timer0 setup - CTC ------------- // 
+    //  TCCR0A = (1 << WGM01); // Set to CTC mode
+    //  TCCR0B = (1 << CS02); // Set prescaler to 256
+    //  TCNT0 = 0; // Initialize counter
+    //  TIMSK0 = (1 << OCIE0A); // Enable timer interrupt
+    //  DDRD |= (1 << BUZZER); // Set buzzer pin as output
+    //  sei();
+
+    // --------- Timer0 setup - PWM ---------- //
+    
+    // initialize BUZZER
+    DDRD |= (1 << BUZZER); 
+    PORTD |= (1 << BUZZER);
+            
+    // prescale (divide by 256)
+    TCCR0B &= ~(1 << CS00);
+    TCCR0B |= (1 << CS02);
+    TCCR0B &= ~(1 << CS01); 
+
+    // set timer 0 to PWM mode, phase correct mode 5
+    // (so that it counts up to 0CR0A)
+    TCCR0A |= (1<<WGM00);
+    TCCR0A &= ~(1<<WGM01);
+    TCCR0B |= (1<<WGM02);
+
+    // toggle OC0A on compare match
+    TCCR0A &= ~(1<<COM0B1);
+    TCCR0A |= (1<<COM0B0);
  
-     sei();
- 
-     return true;
+    return true;
  }
  
- ISR(TIMER0_COMPA_vect) {
-     PORTD ^= (1 << BUZZER); // Toggle buzzer pin
- }
+//  ISR(TIMER0_COMPA_vect) {
+//      PORTD ^= (1 << BUZZER); // Toggle buzzer pin
+//  }
  
  uint8_t OCR0B_from_freq(uint16_t freq) {
-     return (uint8_t) (round(F_CPU / (2 * 256 * freq)) - 1); // -1 because OCR0B counts from 0
+     return (uint8_t) ((round(F_CPU / (2 * 256 * freq))) / 2); // need to halve it because we're in mode 5
  }
+
  
  bool handle_speaker(uint16_t frequency, uint8_t duration) {
      OCR0B = OCR0B_from_freq(frequency);
      variable_delay_ms(duration * 100);
-     PORTD &= ~(1 << BUZZER);
+    //  PORTD &= ~(1 << BUZZER);
      return true;
  }
 
