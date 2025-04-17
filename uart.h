@@ -33,7 +33,7 @@
  * to the UART_BAUD_PRESCALER macro (add or subtract a few counts)
  * due to baud rate error
  */
-#define UART_BAUD_RATE      31500
+#define UART_BAUD_RATE      31250
 
 /***************************************/
 /* MACROS AND FUNCTION DECLARATIONS */

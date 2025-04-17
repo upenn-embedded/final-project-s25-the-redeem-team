@@ -140,40 +140,69 @@
  
  #ifdef MIDI
  //
- volatile uint8_t received_byte = 0;
- volatile uint8_t data_ready = 0;
+//  volatile uint8_t received_byte = 0;
+//  volatile uint8_t data_ready = 0;
  
  
- ISR(USART0_RX_vect) {
-     received_byte = UDR0;     // Read the received byte
-     data_ready = 1;           // Flag to signal main loop
- }
+//  ISR(USART0_RX_vect) {
+//      received_byte = UDR0;     // Read the received byte
+//      data_ready = 1;           // Flag to signal main loop
+//  }
  
- int main(void) {
-     Initialize();
-     sei();
+//  int main(void) {
+//      Initialize();
+//      sei();
  
-     char buffer[100];
-     uint8_t i = 0;
-     char c;
+//      char buffer[100];
+//      uint8_t i = 0;
+//      char c;
  
-     while (1) {
-         c = uart_receive(NULL);  // Blocks until byte received
+//      while (1) {
+//          c = uart_receive(NULL);  // Blocks until byte received
  
-         if (c == '\n' || c == '\r') {
-             buffer[i] = '\0';  // Null-terminate string
-             printf("Received line: %s\n", buffer);
+//          if (c == '\n' || c == '\r') {
+//              buffer[i] = '\0';  // Null-terminate string
+//              printf("Received line: %s\n", buffer);
  
-             // Reset buffer index for next message
-             i = 0;
-         } else if (i < 100 - 1) {
-             buffer[i++] = c;  // Store byte
-         } else {
-             // Buffer overflow protection
-             i = 0;
-             printf("Input too long, resetting buffer.\n");
-         }
-     }
- }
+//              // Reset buffer index for next message
+//              i = 0;
+//          } else if (i < 100 - 1) {
+//              buffer[i++] = c;  // Store byte
+//          } else {
+//              // Buffer overflow protection
+//              i = 0;
+//              printf("Input too long, resetting buffer.\n");
+//          }
+//      }
+//  }
  
+
+ void process_midi_message(uint8_t status, uint8_t data1, uint8_t data2) {
+    uint8_t command = status & 0xF0; // Mask channel
+
+    if (command == 0x90 && data2 > 0) {
+        printf("Note ON: %d\n", data1);
+    } else if ((command == 0x80) || (command == 0x90 && data2 == 0)) {
+        printf("Note OFF: %d\n", data1);
+    } else {
+        printf("Unhandled MIDI message: %02X %02X %02X\n", status, data1, data2);
+    }
+}
+
+int main() {
+    uart_init();
+
+    uint8_t status, data1, data2;
+
+    while (1) {
+        // blocking read of MIDI bytes
+        status = uart_receive(NULL);
+        data1 = uart_receive(NULL);
+        data2 = uart_receive(NULL);
+
+        process_midi_message(status, data1, data2);
+    }
+
+    return 0;
+}
  #endif
