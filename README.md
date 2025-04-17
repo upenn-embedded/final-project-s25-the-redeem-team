@@ -156,7 +156,7 @@ We currently have a detailed flow of our system that takes into account the spec
 - We finished the graphics libary for our visual outputs (Notes, measures, sharp/flat) and it is very fast!
 - In newmain.c we have the working code to play a hardcoded song in the buzzer.
 - In transpose.c we have the transposition code.
-- Here is the video of our waveforms created by the code playing [ode to joy](https://drive.google.com/file/d/1AhIZyFT9VgZigyaGORM7vLKSet8ms8ak/view?usp=sharing)
+- Here is the video of our waveforms created by the code playing [ode to joy](https://drive.google.com/file/d/1AhIZyFT9VgZigyaGORM7vLKSet8ms8ak/view?usp=sharing).
 - Here is a video of our updated [graphics](https://drive.google.com/file/d/1_4paKi2MuRkafrC5hor_PraNmNgu-Otv/view?usp=sharing).
 
 ### Current state of project
