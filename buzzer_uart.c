@@ -177,7 +177,9 @@
 
  
  bool handle_speaker(uint16_t frequency, uint8_t duration) {
+    printf("inputted freq: %d\n", freq);
      OCR0B = OCR0B_from_freq(frequency);
+    printf("calculated ocr value: %d\n", OCR0B);
      variable_delay_ms(duration * 100);
     //  PORTD &= ~(1 << BUZZER);
      return true;
