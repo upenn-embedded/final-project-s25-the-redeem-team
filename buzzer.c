@@ -9,7 +9,7 @@
 
 #include "transpose.h"
  
-#define BUZZER PD6
+#define BUZZER PD5
 
 // initializer for buzzer
 void InitializePWM() {     
@@ -29,8 +29,8 @@ void InitializePWM() {
     TCCR0B |= (1<<WGM02);
 
     // toggle OC0A on compare match
-    TCCR0A &= ~(1<<COM0A1);
-    TCCR0A |= (1<<COM0A0);
+    TCCR0A &= ~(1<<COM0B1);
+    TCCR0A |= (1<<COM0B0);
 
     // TOP value --> MOVE THIS TO MAIN
     // (16MHz/(2*256 prescaler * 440 Hz)) = 71
@@ -46,7 +46,7 @@ int midi_to_freq(int note_num) {
 }
 
 /** 
- * @brief Takes in the transposed melody (in MIDI note # form) and finds the OCR0A 
+ * @brief Takes in the transposed melody (in MIDI note # form) and finds the OCR0AB
           values for each note 
 * @param clk_freq clock frequency in MHz
 */
@@ -81,7 +81,7 @@ int main() {
         // frequency stuff:
         int* ocr_vals = find_ocr_vals(melody, 16, 256);
         for (int i = 0; i < sizeof(ocr_vals); i++) {
-            OCR0A = ocr_vals[i];
+            OCR0B = ocr_vals[i];
             _delay_ms(500);
         }
 
