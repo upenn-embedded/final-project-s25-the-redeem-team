@@ -48,7 +48,7 @@ void InitializeTimer() {
 }
 
 ISR(TIMER1_COMPA_vect) {
-   timer_counter++; // Increment every 1 ms
+   tic++; // Increment every 1 ms
 }
 
 uint16_t encode_note(int note_index) {
@@ -94,28 +94,28 @@ uint16_t encode_note(int note_index) {
  }
 
 
-bool register_note(uint8_t note, uint16_t timestamp, uint8_t on_off) {
+void register_note(uint8_t note, uint16_t timestamp, uint8_t on_off) {
     if (on_off) {
         // Register note on
-        if (melody_length < MAX_NOTE_COUNT) {
-            melody[melody_length].note = note;
-            melody[melody_length].start_time = timestamp;
-            melody[melody_length].duration = 0; // duration will be set when note off is received
-            melody_length++;
-            return true;
+        if (melody_idx < MAX_NOTE_COUNT) {
+            melody[melody_idx].note = note;
+            melody[melody_idx].start_time = timestamp;
+            melody[melody_idx].duration = 0; // duration will be set when note off is received
+            melody_idx++;
+            return;
         } else {
-            return false; // Melody array is full
+            return; // Melody array is full
         }
     } else {
         // Register note off
-        for (int i = melody_length - 1; i >= 0; i++) {
+        for (int i = melody_idx - 1; i >= 0; i++) {
             if (melody[i].note == note && melody[i].duration == 0) {
                 melody[i].duration = timestamp - melody[i].start_time;
-                return true;
+                return ;
             }
         }
     }
-    return false; // Note not found or already off
+    return; // Note not found or already off
 }
 
 void play_note(uint8_t note) {
@@ -245,10 +245,7 @@ void play_note(uint8_t note) {
         register_note(data1, tic, command); // Register note
 
         if (command == 0x90 && data2 > 0) {
-            
-            
-            register_note(data1,0);
-            
+                       
             // set the current note being played
             current_note = data1;
             
