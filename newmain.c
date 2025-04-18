@@ -132,7 +132,8 @@ void play_note(uint8_t note) {
  // initializer for buzzer
  void InitializePWM() {     
      // initialize BUZZER
-     //cli();
+     cli();
+
      DDRD |= (1 << BUZZER); 
      PORTD &= ~(1 << BUZZER);
              
@@ -160,66 +161,66 @@ void play_note(uint8_t note) {
      uart_init();
      lcd_init();
      LCD_setScreen(WHITE);
-     //sei();
+
+     sei();
  }
  
  /* Takes in a MIDI note number and converts it to its frequency */
  uint16_t freq_from_note(uint8_t note) {
       switch (note + 12) {
-          case 60:
-              return 262; // C4
-          case 61:
-              return 277; // C#4
-          case 62:
-              return 294; // D4
-          case 63:
-              return 311; // D#4
-          case 64:
-              return 330; // E4
-          case 65:
-              return 349; // F4
-          case 66:
-              return 370; // F#4
-          case 67:
-              return 392; // G4
-          case 68:
-              return 415; // G#4
-          case 69:
-              return 440; // A4
-          case 70:
-              return 466; // A#4
-          case 71:
-              return 494; // B4
-          case 72:
-              return 523; // C5
-          case 73:
-              return 554; // C#5
-          case 74:
-              return 587; // D5
-          case 75:
-              return 622; // D#5
-          case 76:
-              return 659; // E5
-          case 77:
-              return 698; // F5
-          case 78:
-              return 740; // F#5
-          case 79:
-              return 784; // G5
-          case 80:
-              return 831; // G#5
-          case 81:
-              return 880; // A5
-          case 82:
-              return 932; // A#5
-          case 83:
-              return 988; // B5
-          case 84:
-              return 1047; // C6
-          default:
-              return 0;
-      }
+        // Octave below C4 (C3 to B3)
+        case 48: return 131;  // C3
+        case 49: return 139;  // C#3
+        case 50: return 147;  // D3
+        case 51: return 156;  // D#3
+        case 52: return 165;  // E3
+        case 53: return 175;  // F3
+        case 54: return 185;  // F#3
+        case 55: return 196;  // G3
+        case 56: return 208;  // G#3
+        case 57: return 220;  // A3
+        case 58: return 233;  // A#3
+        case 59: return 247;  // B3
+        case 60: return 262;  // C4
+        case 61: return 277;  // C#4
+        case 62: return 294;  // D4
+        case 63: return 311;  // D#4
+        case 64: return 330;  // E4
+        case 65: return 349;  // F4
+        case 66: return 370;  // F#4
+        case 67: return 392;  // G4
+        case 68: return 415;  // G#4
+        case 69: return 440;  // A4
+        case 70: return 466;  // A#4
+        case 71: return 494;  // B4
+        case 72: return 523;  // C5
+        case 73: return 554;  // C#5
+        case 74: return 587;  // D5
+        case 75: return 622;  // D#5
+        case 76: return 659;  // E5
+        case 77: return 698;  // F5
+        case 78: return 740;  // F#5
+        case 79: return 784;  // G5
+        case 80: return 831;  // G#5
+        case 81: return 880;  // A5
+        case 82: return 932;  // A#5
+        case 83: return 988;  // B5
+        case 84: return 1047; // C6
+        case 85: return 1109; // C#6
+        case 86: return 1175; // D6
+        case 87: return 1245; // D#6
+        case 88: return 1319; // E6
+        case 89: return 1397; // F6
+        case 90: return 1480; // F#6
+        case 91: return 1568; // G6
+        case 92: return 1661; // G#6
+        case 93: return 1760; // A6
+        case 94: return 1865; // A#6
+        case 95: return 1976; // B6
+        case 96: return 2093; // C7
+        default: return 0;   // Invalid note
   }
+}
  
  /** 
   * @brief Takes in the transposed melody (in MIDI note # form) and finds the OCR0AB
@@ -246,8 +247,6 @@ void play_note(uint8_t note) {
 
         if (command == 0x90 && data2 > 0) {
             
-            
-            register_note(data1,0);
             
             // set the current note being played
             current_note = data1;
