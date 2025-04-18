@@ -194,46 +194,10 @@ void play_note(uint8_t note) {
            values for each note 
  * @param clk_freq clock frequency in MHz
  */
-//  void find_ocr_vals(int* transp_melody, int* ocr_arr, uint8_t transp_len) {
-//      for (int i = 0; i < transp_len; i++) {
-//          int freq = freq_from_note(transp_melody[i]);
-//          int ocr_val = (62500) / (2*freq);
-//          printf("ocr val before dividing: %d\n", ocr_val);
-//          ocr_arr[i] = ocr_val; // need to halve it because we're in mode 5
-//          printf("Freq: %d\n", freq);
-//      }
-     
-//  }
-// void print_melody(Note *melody, int length) {
-//     const char *note_names[12] = {
-//         "C", "C#", "D", "D#", "E", "F",
-//         "F#", "G", "G#", "A", "A#", "B"
-//     };
-// 
-//     for (int i = 0; i < length; i++) {
-//         Note note = melody[i];
-//         int pitch_class = note % 12;
-//         int octave = (note / 12) - 1; // MIDI octave system
-//         printf("%s%d ", note_names[pitch_class], octave);
-//     }
-//     printf("\n");
-// }
 
-//  void process_midi_message(uint8_t status, uint8_t data1, uint8_t data2) {
-//     uint8_t command = status & 0xF0; // Mask channel
-
-//     if (command == 0x90 && data2 > 0) {
-//         printf("Note ON: %d\n", data1);
-//         register_note(data1,0,0);
-//     } else if ((command == 0x80) || (command == 0x90 && data2 == 0)) {
-//         printf("Note OFF: %d\n", data1);
-//     } else {
-//         printf("Unhandled MIDI message: %02X %02X %02X\n", status, data1, data2);
-//     }
-// }
  // call helpers from transpose
  int main() {
-     InitializePWM();
+    InitializePWM();
     uint8_t status, data1, data2, note, sign;
     uint8_t current_note;
     uint16_t encoded_note;
