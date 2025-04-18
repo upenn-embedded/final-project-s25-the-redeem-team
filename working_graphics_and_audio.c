@@ -23,6 +23,10 @@
  #include <xc.h>
  #include "math.h"
 
+
+const uint8_t LCD_RAW_NOTE = 0;
+uint8_t SHIFT = 3;
+
 uint16_t freq_from_note(uint8_t note);
 
  typedef struct {
@@ -67,7 +71,13 @@ uint16_t encode_note(int note_index) {
      };
  
      // Wrap note_index to within 0–11
-     int i = note_index % 12;
+     uint8_t i;
+     if (LCD_RAW_NOTE) {
+        i = note_index % 12;
+     } else {
+        i = (note_index + SHIFT) % 12;
+     }
+     
      if (i < 0) i += 12;
  
      char note_char = note_chars[i];
@@ -133,7 +143,8 @@ void play_note(uint8_t note) {
  
  /* Takes in a MIDI note number and converts it to its frequency */
  uint16_t freq_from_note(uint8_t note) {
-      switch (note + 12) {
+     uint8_t shift = (LCD_RAW_NOTE) ? 0 : SHIFT;
+      switch (note + 12 + shift) {
           case 60:
               return 262; // C4
           case 61:
