@@ -185,11 +185,12 @@ Unfortunately, we have not been able to test the core input to our system - the 
   
   We have validated the input reading by printing the MIDI note to the serial terminal whenever it is played: 
 
-  *TODO: insert serial terminal image here*
+  https://drive.google.com/file/d/1kMERMMm2DjY6He5HBS92R28iUckF7n3f/view?usp=sharing
+
 
   And we validated that the frequency outputted from the buzzer matches the frequency of the pressed piano key both on the oscilloscope and by placing a tuning app by the speaker:
 
-  *TODO: insert images of oscilloscope and video next to tuner*
+  https://drive.google.com/file/d/1KfSLp451ht9jftlamnTkq8h12IsP6i24/view?usp=sharing
 
   SRS-03: We have modified this requirement this requirement. Instead of depicting the selected key, we can have the screen show the number of times the shift button has been pressed, so the user has a visual indication of how many semitones they want to shift by. We have not met this requirement yet, but it is in our next steps towards the final demo.
 
