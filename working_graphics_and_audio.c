@@ -9,7 +9,10 @@
  #define F_CPU          16000000UL
  #define MAX_NOTE_COUNT 300
  #define BUZZER         PD5
- 
+#define SHIFT_DOWN PD2
+#define SHIFT_UP PD3
+
+
  #include <avr/io.h>
  #include "ST7735.h"
  #include "LCD_GFX.h"
@@ -110,7 +113,7 @@ void play_note(uint8_t note) {
  // initializer for buzzer
  void InitializePWM() {     
      // initialize BUZZER
-     //cli();
+//     cli();
      DDRD |= (1 << BUZZER); 
      PORTD &= ~(1 << BUZZER);
              
@@ -138,7 +141,7 @@ void play_note(uint8_t note) {
      uart_init();
      lcd_init();
      LCD_setScreen(WHITE);
-     //sei();
+//     sei();
  }
  
  /* Takes in a MIDI note number and converts it to its frequency */
