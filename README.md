@@ -177,7 +177,13 @@ Unfortunately, we have not been able to test the core input to our system - the 
 ![updated_sys_diagram_mvp.jpg](updated_sys_diagram_mvp.jpg)
 
 2. Explain your firmware implementation, including application logic and critical drivers you've written.
+
+Our firmware receives MIDI messages over UART and plays notes using PWM on a buzzer. When a note-on message is received, we calculate the frequency, set the PWM registers, and draw the note on the LCD. We also store each note’s data in a melody array for future use. The system supports shifting notes up or down using a constant. We wrote the main application logic and critical drivers for the LCD screen and re-used the UART driver from a previous lab.
+
 3. Demo your device.
+
+https://drive.google.com/file/d/1alwgwSCpyfBwg8v-MOm49NPUrAQvz7KO/view?usp=sharing
+
 4. Have you achieved some or all of your Software Requirements Specification (SRS)?
 
   Please note that we have made the following important change to our design: Instead of selecting a desired key to transpose to, we will now have two buttons (up and down) that will allow the user to shift the notes of the inputted melody up or down a certain number of semitones, depending on how many times they press the button of the corresponding direction. This, in turn, has changed some of our software and hardware requirements, which we will address below.
@@ -194,8 +200,6 @@ Unfortunately, we have not been able to test the core input to our system - the 
   And we validated that the frequency outputted from the buzzer matches the frequency of the pressed piano key both on the oscilloscope and by placing a tuning app by the speaker:
 
   https://drive.google.com/file/d/1KfSLp451ht9jftlamnTkq8h12IsP6i24/view?usp=sharing
-
-https://drive.google.com/file/d/1alwgwSCpyfBwg8v-MOm49NPUrAQvz7KO/view?usp=sharing
 
   SRS-03: We have modified this requirement this requirement. Instead of depicting the selected key, we can have the screen show the number of times the shift button has been pressed, so the user has a visual indication of how many semitones they want to shift by. We have not met this requirement yet, but it is in our next steps towards the final demo.
 
