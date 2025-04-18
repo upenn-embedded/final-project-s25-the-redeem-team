@@ -177,10 +177,66 @@ Unfortunately, we have not been able to test the core input to our system - the 
 3. Demo your device.
 4. Have you achieved some or all of your Software Requirements Specification (SRS)?
 
-   1. Show how you collected data and the outcomes.
+  Please note that we have made the following important change to our design: Instead of selecting a desired key to transpose to, we will now have two buttons (up and down) that will allow the user to shift the notes of the inputted melody up or down a certain number of semitones, depending on how many times they press the button of the corresponding direction. This, in turn, has changed some of our software and hardware requirements, which we will address below. 
+
+  SRS-01: Since we are shifting the melody instead of transposing to a different key, it will no longer be necessary for the user to indicate to the system what the key of the inputted melody is. Therefore, we will not need to check if the user's selection of the inputted melody actually matches the melody played.
+
+  SRS-02: We have met this requirement. Specifically, we have managed to read in the MIDI input and map the note number to its corresponding frequency. Then, we send this frequency via PWM to the speaker. So far, we have connected only one speaker and have tested with one note playing at a time. If we have time, we will add a second speaker and test with chords.
+  
+  We have validated the input reading by printing the MIDI note to the serial terminal whenever it is played: 
+
+  *TODO: insert serial terminal image here*
+
+  And we validated that the frequency outputted from the buzzer matches the frequency of the pressed piano key both on the oscilloscope and by placing a tuning app by the speaker:
+
+  *TODO: insert images of oscilloscope and video next to tuner*
+
+  SRS-03: We have modified this requirement this requirement. Instead of depicting the selected key, we can have the screen show the number of times the shift button has been pressed, so the user has a visual indication of how many semitones they want to shift by. We have not met this requirement yet, but it is in our next steps towards the final demo.
+
+  SRS-04: Again, since we are shifting the melody instead of selecting a desired key to transpose to, this requirement will no longer be necessary. The shifting will be able to occur regardless.
+
+  SRS-05: This requirement also needs a bit of modification. The requirement is now that the transposition algorithm will correctly shift each note of the inputted melody by the user's desired amount of semitones. We have demonstrated that this works in the demo video (in a synchronous manner), as one LCD screen shows the note currently being played on the piano and the other shows the note shifted by a hardcoded (for now) number of shifts.
+
+  SRS-06: This is a requirement that we have not yet, but is our first priority for out next steps. We have struggled a bit with marking the duration of each inputted note because our ISRs for the timer that is used to count the duration does not interact well with the MIDI's UART system. We will investigate this further.
+
+  SRS-07: We have met this requirement, as evident in the demo video and further explained in SRS-05. The key difference between the MVP and the final demo will be that the transposed notes will be shown on the LCD screen retroactively, so that the user can take note of them and try playing them on the keyboard. 
+
+  SRS-08: We have met half of this requirement. The screen does display the transposed notes, but we have yet to play the frequencies of the transposition through a speaker (this was a dependency from SRS-05). This is our next step.
+
+  Below is our **UPDATED** list of software requirements:
+
+  | ID     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SRS-01 | The notes from the input recording shall be cleaned and parsed accurately based on their frequencies. For initial testing, we will assume that one note is placed at a time (no chords) and the melody is not more than seven notes. Once it can parse this simple input successfully, we will incrementally test chords and more complex melodies.                                                                                                                                                                                                                                                  |
+| SRS-02 | The screen will show the number of times the shift button has been pressed, so the user has a visual indication of how many semitones they want to shift by.                                                                                                                                                                                                                                                                                                                        |
+| SRS-03 | The transposition algorithm will correctly shift each note of the inputted melody by the user's desired amount of semitones.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| SRS-04 | The screen should correctly display the names of the notes from the transposed melody in a readable format, so the user can try to play the transposed melody on the keyboard if they so choose.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| SRS-05 | The speaker shall correctly output the transposition melody. We will test on the same types of inputs as the transposition algorithm and in similar order.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| SRS-06 | The screen should display the transposed notes and the speaker will play the frequencies of the transposed notes simultaneously.                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+
 5. Have you achieved some or all of your Hardware Requirements Specification (HRS)?
 
-   1. Show how you collected data and the outcomes.
+  HRS-01: We have met this requirement, as shown in the demo video. At first, we struggled with reading in the input because of our opto-isolator, but through the professor's advice, we eventually tried removing the opto-isolator and were clearly able to read the MIDI note, on/off status, and the velocity (volume control) of that note.
+
+  HRS-02: The keyboard we ended up ordering did not have a built-in speaker (for budget reasons), so we ordered a separate speaker and configured it to sound the inputted keys of the piano (again, you can see this in the demo video). What is left for us to implement is to sound the transcribed outputs. 
+
+  HRS-03: This requirement is no longer necessary, as we do not need to have the current key inputted in order to perform a note shift operation.
+
+  HRS-04: We have changed this requirement due to our decision to do shifting instead. So, there will be two buttons to choose the shift amount (either to a higher or lower note) by a semitone for each button press.
+
+  HRS-05: Currently, we have two screens: one shows the inputted note and the other shows the shifted note. For the final demo, we will have the shifted notes appear on the screen in a sequence after the melody is inputted. We will also add a visual to indicate the number of times the button is pressed, so the user can see by how many semitones they want to shift their melody.
+
+  HRS-06: Since we are allowing the user to choose the number of shifts, and given the small size of our keyboard, it will no longer be necessary for the user to select an octave preference.
+
+  Below is our **UPDATED** list of hardware requirements:
+
+  | ID     | Description                                                                                                 |
+| ------ | ----------------------------------------------------------------------------------------------------------- |
+| HRS-01 | A mini electric piano will be used to provide inputs (i.e. music) that will then be processed by the atmega |
+| HRS-02 | A separate speaker is used to sound the inputted keys of the piano, and the shifted notes.          |
+| HRS-03 | There will be two buttons to choose the shift amount (either to a higher or lower note) by a semitone for each button press.                                                |
+| HRS-04 | A screen will be used to display the input key, output key, input octave, and output octave of the music.   |
+
 6. Show off the remaining elements that will make your project whole: mechanical casework, supporting graphical user interface (GUI), web portal, etc.
 7. What is the riskiest part remaining of your project?
 
