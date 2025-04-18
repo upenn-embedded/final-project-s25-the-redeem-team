@@ -1,5 +1,5 @@
 #define F_CPU          16000000UL
-#define MAX_NOTE_COUNT 300
+#define MAX_NOTE_COUNT 3 // needs to be low for print_melody to not stall the note
 #define BUZZER         PD5
 
 #include <avr/io.h>
@@ -19,7 +19,7 @@
 typedef struct {
    uint8_t note; // from 60 to 83 (C4 to B5)
    uint16_t start_time; // in ds (1/10 of a second)
-   uint8_t duration; // in ds (1/10 of a second)
+   uint16_t duration; // in ds (1/10 of a second)
 } Note; // 4 bytes
 
 Note melody[MAX_NOTE_COUNT]; // 300 * 4 = 1200 bytes
@@ -27,7 +27,9 @@ int melody_idx = 0; // number of notes in the melody
 
 // timer variables
 volatile uint32_t timer_counter = 0; // Elapsed time in ms
-uint32_t note_start_time = 0; // Time when the note started (in ms)
+//uint16_t timer_counter = 0; // Elapsed time in ms
+
+uint16_t note_start_time = 0; // Time when the note started (in ms)
 
 // initializer for buzzer
 void InitializePWM() {     
@@ -64,6 +66,7 @@ void InitializeTimer() {
 }
 
 ISR(TIMER1_COMPA_vect) {
+//    printf("entered isr\n");
    timer_counter++; // Increment every 1 ms
 }
 
@@ -123,7 +126,8 @@ uint16_t freq_from_note(uint8_t note) {
    }
 }
 
-void register_note(uint8_t note, uint16_t timestamp, uint8_t duration) {
+void register_note(uint8_t note, uint16_t timestamp, uint16_t duration) {
+//    printf("entered register note\n ");
    if (melody_idx < MAX_NOTE_COUNT) {
        melody[melody_idx].note = note;
        melody[melody_idx].start_time = timestamp;
@@ -137,7 +141,7 @@ void play_note(uint8_t note) {
    int ocr_val = (62500) / (2*freq);
    OCR0A = ocr_val;
    OCR0B = OCR0A / 2;
-   printf("OCR0A Value: %d\n", OCR0A);
+//   printf("OCR0A Value: %d\n", OCR0A);
    _delay_ms(10);
 }
     
@@ -152,11 +156,16 @@ void print_melody(Note *melody, int length) {
 int main() {
    InitializePWM();
    InitializeTimer();
+   
+   // Enable global interrupts after initialization
+//   sei();
+//   printf("Global interrupts enabled...\n");
 
    uint8_t status, data1, data2;
    uint8_t curr_note;
 
    while(1) {
+       printf("in while loop\n");
        status = uart_receive(NULL);
        data1 = uart_receive(NULL);
        data2 = uart_receive(NULL);
@@ -164,26 +173,27 @@ int main() {
        uint8_t command = status & 0xF0; // Mask channel
 
        if (command == 0x90 && data2 > 0) {
-           printf("Note ON: %d\n", data1);
+//           printf("Note ON: %d\n", data1);
 
            // Record the current time as the start time of the note
            note_start_time = timer_counter;
            play_note(data1);
            curr_note = data1;
        } else if ((command == 0x80) || (command == 0x90 && data2 == 0)) {
-           printf("Note OFF: %d\n", data1);
+//           printf("Note OFF: %d\n", data1);
            if (curr_note == data1) {
                // Calculate the duration the note was pressed
-               uint32_t duration = timer_counter - note_start_time;
+               uint16_t duration = timer_counter - note_start_time;
+//               printf("timer counter: %d, note_start_time %d, duration: %d\n", timer_counter, note_start_time, duration);
                register_note(data1,note_start_time,duration);
-               print_melody(melody, MAX_NOTE_COUNT); // check if duration was logged
+//               print_melody(melody, MAX_NOTE_COUNT); // check if duration was logged
                
                // stop playing note
                OCR0A = 0;
                OCR0B = 0;
            }
        } else {
-           printf("Unhandled MIDI message: %02X %02X %02X\n", status, data1, data2);
+//           printf("Unhandled MIDI message: %02X %02X %02X\n", status, data1, data2);
        }
     }
 }
