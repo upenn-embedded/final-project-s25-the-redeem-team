@@ -23,6 +23,8 @@
  #include <xc.h>
  #include "math.h"
 
+ uint16_t freq_from_note(uint8_t note);
+
  typedef struct {
      uint8_t note; // from 60 to 83 (C4 to B5)
      uint16_t start_time; // in ds (1/10 of a second)
@@ -39,7 +41,7 @@ uint32_t note_start_time = 0; // Time when the note started (in ms)
 
 
 void register_note(uint8_t note, uint16_t timestamp, uint8_t duration) {
-    if (melody_length < MAX_NOTE_COUNT) {
+    if (melody_idx < MAX_NOTE_COUNT) {
         melody[melody_idx].note = note;
         melody[melody_idx].start_time = timestamp;
         melody[melody_idx].duration = duration; // duration will be set when note off is received
