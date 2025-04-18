@@ -173,6 +173,9 @@ Unfortunately, we have not been able to test the core input to our system - the 
 ## MVP Demo
 
 1. Show a system block diagram & explain the hardware implementation.
+
+![updated_sys_diagram_mvp.jpg](updated_sys_diagram_mvp.jpg)
+
 2. Explain your firmware implementation, including application logic and critical drivers you've written.
 3. Demo your device.
 4. Have you achieved some or all of your Software Requirements Specification (SRS)?
@@ -185,11 +188,12 @@ Unfortunately, we have not been able to test the core input to our system - the 
 
   We have validated the input reading by printing the MIDI note to the serial terminal whenever it is played:
 
-  *TODO: insert serial terminal image here*
+  https://drive.google.com/file/d/1kMERMMm2DjY6He5HBS92R28iUckF7n3f/view?usp=sharing
+
 
   And we validated that the frequency outputted from the buzzer matches the frequency of the pressed piano key both on the oscilloscope and by placing a tuning app by the speaker:
 
-  *TODO: insert images of oscilloscope and video next to tuner*
+  https://drive.google.com/file/d/1KfSLp451ht9jftlamnTkq8h12IsP6i24/view?usp=sharing
 
 https://drive.google.com/file/d/1alwgwSCpyfBwg8v-MOm49NPUrAQvz7KO/view?usp=sharing
 
