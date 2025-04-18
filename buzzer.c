@@ -32,12 +32,17 @@
 Note melody[MAX_NOTE_COUNT]; // 300 * 4 = 1200 bytes
 int melody_idx = 0; // number of notes in the melody
 
+// timer variables
+volatile uint32_t timer_counter = 0; // Elapsed time in ms
+uint32_t note_start_time = 0; // Time when the note started (in ms)
 
-void register_note(uint8_t note, uint16_t timestamp) {
+
+
+void register_note(uint8_t note, uint16_t timestamp, uint8_t duration) {
     if (melody_length < MAX_NOTE_COUNT) {
         melody[melody_idx].note = note;
         melody[melody_idx].start_time = timestamp;
-        melody[melody_idx].duration = 0; // duration will be set when note off is received
+        melody[melody_idx].duration = duration; // duration will be set when note off is received
         melody_idx++;
     }
 }
@@ -84,6 +89,31 @@ void play_note(uint8_t note) {
      uart_init();
      //sei();
  }
+
+ void InitializeTimer() {
+    // Configure Timer 1 in CTC mode, prescaler of 256 for 1ms intervals
+    TCCR1B |= (1 << WGM12);      // CTC mode
+    TCCR1B |= (1 << CS12);       // Prescaler 256
+    OCR1A = 62;                  // Compare match value for 1 ms (16MHz / 256 / 1000)
+    TIMSK1 |= (1 << OCIE1A);     // Enable interrupt on compare match
+}
+
+ISR(TIMER1_COMPA_vect) {
+    timer_counter++; // Increment every 1 ms
+}
+
+void play_note_with_duration(uint8_t note, uint16_t duration) {
+    // Get the frequency for the note
+    int freq = freq_from_note(note);
+    int ocr_val = (62500) / (2 * freq);
+    
+    // Set the PWM to play the note
+    OCR0A = ocr_val;
+    OCR0B = ocr_val / 2;
+    
+    // printf("Note ON: %d\n", note);
+}
+
  
  /* Takes in a MIDI note number and converts it to its frequency */
  uint16_t freq_from_note(uint8_t note) {
@@ -156,20 +186,20 @@ void play_note(uint8_t note) {
 //      }
      
 //  }
- void print_melody(int *melody, int length) {
-     const char *note_names[12] = {
-         "C", "C#", "D", "D#", "E", "F",
-         "F#", "G", "G#", "A", "A#", "B"
-     };
+//  void print_melody(int *melody, int length) {
+//      const char *note_names[12] = {
+//          "C", "C#", "D", "D#", "E", "F",
+//          "F#", "G", "G#", "A", "A#", "B"
+//      };
  
-     for (int i = 0; i < length; i++) {
-         int note = melody[i];
-         int pitch_class = note % 12;
-         int octave = (note / 12) - 1; // MIDI octave system
-         printf("%s%d ", note_names[pitch_class], octave);
-     }
-     printf("\n");
- }
+//      for (int i = 0; i < length; i++) {
+//          int note = melody[i];
+//          int pitch_class = note % 12;
+//          int octave = (note / 12) - 1; // MIDI octave system
+//          printf("%s%d ", note_names[pitch_class], octave);
+//      }
+//      printf("\n");
+//  }
 
 //  void process_midi_message(uint8_t status, uint8_t data1, uint8_t data2) {
 //     uint8_t command = status & 0xF0; // Mask channel
@@ -186,7 +216,10 @@ void play_note(uint8_t note) {
  // call helpers from transpose
  int main() {
      InitializePWM();
+     InitializeTimer();
     uint8_t status, data1, data2;
+
+    uint8_t curr_note;
 
      while(1) {
         status = uart_receive(NULL);
@@ -212,11 +245,26 @@ void play_note(uint8_t note) {
 
         if (command == 0x90 && data2 > 0) {
             printf("Note ON: %d\n", data1);
-            register_note(data1,0,0);
+
+            // Record the current time as the start time of the note
+            note_start_time = timer_counter;
             play_note(data1);
-            print_melody(melody, MAX_NOTE_COUNT); // for debugging
+            curr_note = data1;
         } else if ((command == 0x80) || (command == 0x90 && data2 == 0)) {
             printf("Note OFF: %d\n", data1);
+            if (curr_note == data1) {
+                // Calculate the duration the note was pressed
+                uint32_t duration = timer_counter - note_start_time;
+                register_note(data1,note_start_time,duration);
+                // print_melody(melody, MAX_NOTE_COUNT); // for debugging
+                
+                // stop playing note
+                OCR0A = 0;
+                OCR0B = 0;
+
+                // replay note for the marked duration
+                play_note_with_duration(curr_note, duration);
+            }
         } else {
             printf("Unhandled MIDI message: %02X %02X %02X\n", status, data1, data2);
         }
