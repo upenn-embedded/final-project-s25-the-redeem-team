@@ -173,6 +173,9 @@ Unfortunately, we have not been able to test the core input to our system - the 
 ## MVP Demo
 
 1. Show a system block diagram & explain the hardware implementation.
+
+![updated_sys_diagram_mvp.jpg](updated_sys_diagram_mvp.jpg)
+
 2. Explain your firmware implementation, including application logic and critical drivers you've written.
 3. Demo your device.
 4. Have you achieved some or all of your Software Requirements Specification (SRS)?
