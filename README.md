@@ -240,8 +240,13 @@ Unfortunately, we have not been able to test the core input to our system - the 
 6. Show off the remaining elements that will make your project whole: mechanical casework, supporting graphical user interface (GUI), web portal, etc.
 7. What is the riskiest part remaining of your project?
 
-   1. How do you plan to de-risk this?
+  The most challening part remaining of the project will be to figure out how we can use interrupts that are compatible with the MIDI UART serial communicator. We will need timers and interrupts for two reasons: (1) to determine the duration that each note is played, so we can output the shifted melody with the correct rhythm. (2) configure the buttons that will be used to input the amount of shifting.
+
+  For the buttons, we plan to de-risk this by potentially doing polling instead of interrupts to mitigate any conflicts with the MIDI input. For the note duration measurement, we will experiment more the use of timers and ISRs to determine where the conflict lies and what causes it. We will also consult students of past projects who have also interacted with MIDI inputs for their mentorship.
+
 8. What questions or help do you need from the teaching team?
+
+  We would appreciate some advice or alternative solutions to the challenges presented above (question 7).
 
 ## Final Project Report
 
