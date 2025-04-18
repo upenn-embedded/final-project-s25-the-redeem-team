@@ -1,194 +1,206 @@
-/*
- * ESE519_Lab4_Pong_Starter.c
- *
- * Created: 9/21/2021 21:21:21 AM
- * Author : J. Ye
- */
+#define F_CPU          16000000UL
+#define MAX_NOTE_COUNT 300
+#define BUZZER         PD5
 
- #define F_CPU 16000000UL
+#include <avr/io.h>
+#include "ST7735.h"
+#include "LCD_GFX.h"
+#include <stdio.h>
 
- #include <avr/io.h>
- #include <stdlib.h>
- #include <util/delay.h>
- #include <avr/interrupt.h>
- 
- #include <math.h>
- #include <stdbool.h>
- #include <stdint.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- 
- #define F_CPU          16000000UL
- #define MAX_NOTE_COUNT 300
- #define BUZZER         PD6
- 
- typedef struct {
-     uint8_t note; // from 60 to 83 (C4 to B5)
-     uint16_t start_time; // in ds (1/10 of a second)
-     uint8_t duration; // in ds (1/10 of a second)
- } Note; // 4 bytes
- 
- Note melody[MAX_NOTE_COUNT]; // 300 * 4 = 1200 bytes
- 
- int melody_length = 0; // number of notes in the melody
- 
- bool listening_mode = 0; // 1 = listening to melody, 0 = playing melody
- 
- 
- void variable_delay_ms(uint16_t ms) {
-     while (ms--) {
-         _delay_ms(1);
-     }
- }
- 
- bool register_note(uint8_t note, uint16_t timestamp, uint8_t on_off) {
-     if (on_off) {
-         // Register note on
-         if (melody_length < MAX_NOTE_COUNT) {
-             melody[melody_length].note = note;
-             melody[melody_length].start_time = timestamp;
-             melody[melody_length].duration = 0; // duration will be set when note off is received
-             melody_length++;
-             return true;
-         } else {
-             return false; // Melody array is full
-         }
-     } else {
-         // Register note off
-         for (int i = melody_length - 1; i >= 0; i++) {
-             if (melody[i].note == note && melody[i].duration == 0) {
-                 melody[i].duration = timestamp - melody[i].start_time;
-                 return true;
-             }
-         }
-     }
-     return false; // Note not found or already off
- }
- 
- uint16_t freq_from_note(uint8_t note) {
-     switch (note) {
-         case 60:
-             return 262; // C4
-         case 61:
-             return 277; // C#4
-         case 62:
-             return 294; // D4
-         case 63:
-             return 311; // D#4
-         case 64:
-             return 330; // E4
-         case 65:
-             return 349; // F4
-         case 66:
-             return 370; // F#4
-         case 67:
-             return 392; // G4
-         case 68:
-             return 415; // G#4
-         case 69:
-             return 440; // A4
-         case 70:
-             return 466; // A#4
-         case 71:
-             return 494; // B4
-         case 72:
-             return 523; // C5
-         case 73:
-             return 554; // C#5
-         case 74:
-             return 587; // D5
-         case 75:
-             return 622; // D#5
-         case 76:
-             return 659; // E5
-         case 77:
-             return 698; // F5
-         case 78:
-             return 740; // F#5
-         case 79:
-             return 784; // G5
-         case 80:
-             return 831; // G#5
-         case 81:
-             return 880; // A5
-         case 82:
-             return 932; // A#5
-         case 83:
-             return 988; // B5
-         default:
-             return 0;
-     }
- }
- 
- bool initialise() {
-     melody[0] = (Note){64, 0, 5}; // mi (E4)
-     melody[1] = (Note){64, 5, 5}; // mi (E4)
-     melody[2] = (Note){65, 10, 5}; // fa (F4)
-     melody[3] = (Note){67, 15, 5}; // sol (G4)
-     melody[4] = (Note){67, 20, 5}; // sol (G4)
-     melody[5] = (Note){65, 25, 5}; // fa (F4)
-     melody[6] = (Note){64, 30, 5}; // mi (E4)
-     melody[7] = (Note){62, 35, 5}; // re (D4)
-     melody[8] = (Note){60, 40, 5}; // do (C4)
-     melody[9] = (Note){60, 45, 5}; // do (C4)
-     melody[10] = (Note){62, 50, 5}; // re (D4)
-     melody[11] = (Note){64, 55, 5}; // mi (E4)
-     melody[12] = (Note){64, 60, 5}; // mi (E4)
-     melody[13] = (Note){62, 65, 5}; // re (D4)
-     melody[14] = (Note){62, 70, 5}; // re (D4)
- 
-     melody_length = 15; // Set the length of the melody
- 
-     // Timer0 setup
-     TCCR0A = (1 << WGM01); // Set to CTC mode
-     TCCR0B = (1 << CS02); // Set prescaler to 256
-     TCNT0 = 0; // Initialize counter
-     TIMSK0 = (1 << OCIE0A); // Enable timer interrupt
-     DDRD |= (1 << BUZZER); // Set buzzer pin as output
- 
-     sei();
- 
-     return true;
- }
- 
- ISR(TIMER0_COMPA_vect) {
-     PORTD ^= (1 << BUZZER); // Toggle buzzer pin
- }
- 
- uint8_t OCR0A_from_freq(uint16_t freq) {
-     return (uint8_t) (round(F_CPU / (2 * 256 * freq)) - 1); // -1 because OCR0A counts from 0
- }
- 
- bool handle_speaker(uint16_t frequency, uint8_t duration) {
-     OCR0A = OCR0A_from_freq(frequency);
-     variable_delay_ms(duration * 100);
-     PORTD &= ~(1 << BUZZER);
-     return true;
- }
- 
- int main(void) {
-     initialise();
- 
-     while (true) {
-         if (listening_mode) {
-             // TODO: WHEN WE HAVE THE PARTS
-         } else {
-             // Playing mode: play melody
-             variable_delay_ms(melody[0].start_time * 100); // Wait for the first note to start
- 
-             for (int i = 0; i < melody_length; i++) {
-                 handle_speaker(freq_from_note(melody[i].note), melody[i].duration);
-             }
- 
-             _delay_ms(50);
-         }
-         
-         
-     }
- }
- 
- // TODO: WHEN PARTS ARRIVE
- // ISR that accumulates UART message (possibly 3 bytes) and then calls
- // the parsing function parse_input when when a full mesaage is complete
- // Keep it short and simple, as it will be called frequently
+
+#include <avr/interrupt.h>
+#include "uart.h"
+
+#include <util/delay.h> 
+#include <xc.h>
+#include "math.h"
+
+
+typedef struct {
+   uint8_t note; // from 60 to 83 (C4 to B5)
+   uint16_t start_time; // in ds (1/10 of a second)
+   uint8_t duration; // in ds (1/10 of a second)
+} Note; // 4 bytes
+
+Note melody[MAX_NOTE_COUNT]; // 300 * 4 = 1200 bytes
+int melody_idx = 0; // number of notes in the melody
+
+volatile uint32_t tic = 0; // Timer counter for 10ms intervals
+
+// initializer for buzzer
+void InitializePWM() {     
+   // initialize BUZZER
+   DDRD |= (1 << BUZZER); 
+   PORTD &= ~(1 << BUZZER);
+           
+   // prescale (divide by 256)
+   TCCR0B &= ~(1 << CS00);
+   TCCR0B |= (1 << CS02);
+   TCCR0B &= ~(1 << CS01); 
+
+   // set timer 0 to PWM mode, phase correct mode 5
+   // (so that it counts up to 0CR0A)
+   TCCR0A |= (1<<WGM00);
+   TCCR0A &= ~(1<<WGM01);
+   TCCR0B |= (1<<WGM02);
+   
+   TIMSK0 |= (1 << OCIE0A);
+
+   // toggle OC0A on compare match
+   TCCR0A |= (1<<COM0B1);
+   TCCR0A |= (1<<COM0B0);
+
+   uart_init();
+}
+
+void InitializeTimer() {
+   cli();
+
+   // Configure Timer 1 in CTC mode, prescaler of 256 for 1ms intervals
+   TCCR1B |= (1 << WGM12);      // CTC mode
+   TCCR1B |= (1 << CS11) | (1 << CS10); // Prescaler 256
+   OCR1A = 2499;                  // Compare match value for 10 ms
+   TIMSK1 |= (1 << OCIE1A);     // Enable interrupt on compare match
+
+   sei();                       // Enable global interrupts
+}
+
+ISR(TIMER1_COMPA_vect) {
+   timer_counter++; // Increment every 1 ms
+}
+
+/* Takes in a MIDI note number and converts it to its frequency */
+uint16_t freq_from_note(uint8_t note) {
+   switch (note) {
+       case 60:
+           return 262; // C4
+       case 61:
+           return 277; // C#4
+       case 62:
+           return 294; // D4
+       case 63:
+           return 311; // D#4
+       case 64:
+           return 330; // E4
+       case 65:
+           return 349; // F4
+       case 66:
+           return 370; // F#4
+       case 67:
+           return 392; // G4
+       case 68:
+           return 415; // G#4
+       case 69:
+           return 440; // A4
+       case 70:
+           return 466; // A#4
+       case 71:
+           return 494; // B4
+       case 72:
+           return 523; // C5
+       case 73:
+           return 554; // C#5
+       case 74:
+           return 587; // D5
+       case 75:
+           return 622; // D#5
+       case 76:
+           return 659; // E5
+       case 77:
+           return 698; // F5
+       case 78:
+           return 740; // F#5
+       case 79:
+           return 784; // G5
+       case 80:
+           return 831; // G#5
+       case 81:
+           return 880; // A5
+       case 82:
+           return 932; // A#5
+       case 83:
+           return 988; // B5
+       default:
+           return 0;
+   }
+}
+
+
+bool register_note(uint8_t note, uint16_t timestamp, uint8_t on_off) {
+    if (on_off) {
+        // Register note on
+        if (melody_length < MAX_NOTE_COUNT) {
+            melody[melody_length].note = note;
+            melody[melody_length].start_time = timestamp;
+            melody[melody_length].duration = 0; // duration will be set when note off is received
+            melody_length++;
+            return true;
+        } else {
+            return false; // Melody array is full
+        }
+    } else {
+        // Register note off
+        for (int i = melody_length - 1; i >= 0; i++) {
+            if (melody[i].note == note && melody[i].duration == 0) {
+                melody[i].duration = timestamp - melody[i].start_time;
+                return true;
+            }
+        }
+    }
+    return false; // Note not found or already off
+}
+
+void play_note(uint8_t note) {
+   int freq = freq_from_note(note);
+   int ocr_val = (62500) / (2*freq);
+   OCR0A = ocr_val;
+   OCR0B = OCR0A / 2;
+   printf("OCR0A Value: %d\n", OCR0A);
+   _delay_ms(10);
+}
+    
+void print_melody(Note *melody, int length) {
+   for (int i = 0; i < length; i++) {
+       printf("Note: %d\n", melody[i].note);
+       printf("Start time: %d\n", melody[i].note);
+       printf("Duration: %d\n\n", melody[i].duration);
+   }
+}
+
+int main() {
+   InitializePWM();
+   InitializeTimer();
+
+   uint8_t status, note, velocity;
+   uint8_t curr_note;
+
+   while(1) {
+       status = uart_receive(NULL);
+       note = uart_receive(NULL);
+       velocity = uart_receive(NULL);
+
+       uint8_t command = status & 0xF0; // Mask channel
+
+       register_note(note, tic, command); // Register note on
+
+       if (command == 0x90 && velocity > 0) {
+           printf("Note ON: %d\n", note);
+
+           // Record the current time as the start time of the note
+           play_note(note);
+           curr_note = note;
+       } else if ((command == 0x80) || (command == 0x90 && velocity == 0)) {
+           printf("Note OFF: %d\n", note);
+           if (curr_note == note) {
+               // Calculate the duration the note was pressed
+               print_melody(melody, MAX_NOTE_COUNT); // check if duration was logged
+               
+               // stop playing note
+               OCR0A = 0;
+               OCR0B = 0;
+           }
+       } else {
+           printf("Unhandled MIDI message: %02X %02X %02X\n", status, note, velocity);
+       }
+    }
+}
