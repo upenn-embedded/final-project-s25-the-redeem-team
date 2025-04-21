@@ -43,13 +43,13 @@ volatile uint32_t tic = 0; // Timer counter for 10ms intervals
 void InitializeTimer() { 
     // Configure Timer 1 in CTC mode, prescaler of 256 for 1ms intervals
     TCCR1B |= (1 << WGM12);      // CTC mode
-    TCCR1B |= (1 << CS11) | (1 << CS10); // Prescaler 256
-    OCR1A = 2499;                  // Compare match value for 40 ms (prolly)
+    TCCR1B |= (1 << CS11) | (1 << CS10); // Prescaler 64
+    OCR1A = 2499;                  // Compare match value for 10ms (16MHz / 64 / 100Hz)
     TIMSK1 |= (1 << OCIE1A);     // Enable interrupt on compare match
  }
 
 ISR(TIMER1_COMPA_vect) {
-    tic++; // Increment every 1 ms
+    tic++; // Increment every 10 ms
  }
 
 uint16_t encode_note(int note_index) {
@@ -119,12 +119,9 @@ void play_note(uint8_t note) {
     _delay_ms(10);
 }
 
-
-
  // initializer for buzzer
  void InitializePWM() {     
      // initialize BUZZER
-     //cli();
      DDRD |= (1 << BUZZER); 
      PORTD &= ~(1 << BUZZER);
              
@@ -152,7 +149,6 @@ void play_note(uint8_t note) {
      uart_init();
      lcd_init();
      LCD_setScreen(WHITE);
-     //sei();
  }
  
  /* Takes in a MIDI note number and converts it to its frequency */
@@ -220,7 +216,10 @@ void play_note(uint8_t note) {
 
  // call helpers from transpose
  int main() {
+    cli();
+    InitializeTimer();
     InitializePWM();
+    sei();
     uint8_t status, data1, data2, note, sign;
     uint8_t current_note;
     uint16_t encoded_note;
