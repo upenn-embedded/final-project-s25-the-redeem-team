@@ -21,7 +21,6 @@
  
  #include <util/delay.h> 
  #include <xc.h>
- #include "math.h"
  
  
  const uint8_t LCD_RAW_NOTE = 0;
@@ -39,9 +38,11 @@
  
  typedef struct {
      uint8_t note; // from 60 to 83 (C4 to B5)
-     uint16_t start_time; // in ds (1/10 of a second)
+     uint16_t start_time; // in 10 ms (1/100 of a second)
      uint8_t duration; // in ds (1/10 of a second)
  } Note; // 4 bytes
+
+ Note curr_note;
  
  Note melody[MAX_NOTE_COUNT]; // 300 * 4 = 1200 bytes
  int melody_idx = 0; // number of notes in the melody
@@ -49,7 +50,7 @@
  volatile uint32_t tic = 0; // Timer counter for 10ms intervals
  
  void InitializeTimer() {
-     // Configure Timer 1 in CTC mode, prescaler of 256 for 1ms intervals
+     // Configure Timer 1 in CTC mode, prescaler of 64 for 1ms intervals
      TCCR1B |= (1 << WGM12); // CTC mode
      TCCR1B |= (1 << CS11) | (1 << CS10); // Prescaler 64
      OCR1A = 2499; // Compare match value for 10ms (16MHz / 64 / 100Hz)
@@ -280,23 +281,33 @@
                  printf("Unhandled MIDI message: %02X %02X %02X\n", status, data1, data2);
              }
          } else { // playing mode
-             // first time entering here do this:
+             // first time entering playback do this:
              if (first_time_entering_playback_loop) { // reset tic counter
                  tic = 0;
                  first_time_entering_playback_loop = 0;
+                 curr_note_num = 0; // reset current note number
+                 curr_note = melody[0]; // reset current note
              }
              
-             if (curr_note_num > melody_idx) continue; // skip if song has finished
-             
-             if 
-             
-             
-             Note curr_note = melody[curr_note_num];
-             
-             // calculate end time of current note
-             curr_note_end_time = curr_note -> start_time + curr_note -> duration; // in ds (1/10 of a second)
-             
-             
+             if (curr_note_num >= melody_idx) continue; // skip if song has finished
+
+             if (curr_note_end_time < tic) { // if current note stopped playing
+                curr_note_num++; // move to next note
+                curr_note = melody[curr_note_num]; // get next note
+                curr_note_end_time = curr_note.start_time + curr_note.duration; // in ds (1/10 of a second)
+                continue; // skip to next iteration
+             } else if (curr_note.start_time > tic) { // if current note has not started playing
+                continue; // skip to next iteration
+             } else { // if current note has started playing
+                 play_note(curr_note.note); //play note
+ 
+                 // draw note on LCD
+                 LCD_clearScreen();
+                 LCD_drawMeasure();
+                 LCD_drawNoteChar(curr_note.note);
+             }
+
+            // TODO: Add a button to switch between listening and playback modes
          }
      }
  }
