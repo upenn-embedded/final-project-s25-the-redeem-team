@@ -29,6 +29,8 @@ uint8_t SHIFT = 3;
 
 uint16_t freq_from_note(uint8_t note);
 
+volatile uint32_t timer_counter = 0; // Elapsed time in ms
+
  typedef struct {
      uint8_t note; // from 60 to 83 (C4 to B5)
      uint16_t start_time; // in ds (1/10 of a second)
@@ -37,6 +39,8 @@ uint16_t freq_from_note(uint8_t note);
  
 Note melody[MAX_NOTE_COUNT]; // 300 * 4 = 1200 bytes
 int melody_idx = 0; // number of notes in the melody
+
+
 
 uint16_t encode_note(int note_index) {
      // Define the 12 semitone notes in an octave
@@ -110,7 +114,6 @@ void play_note(uint8_t note) {
  // initializer for buzzer
  void InitializePWM() {     
      // initialize BUZZER
-     //cli();
      DDRD |= (1 << BUZZER); 
      PORTD &= ~(1 << BUZZER);
              
@@ -125,7 +128,7 @@ void play_note(uint8_t note) {
      TCCR0A &= ~(1<<WGM01);
      TCCR0B |= (1<<WGM02);
      
-     TIMSK0 |= (1 << OCIE0A);
+//     TIMSK0 |= (1 << OCIE0A);
  
      // toggle OC0A on compare match
      TCCR0A |= (1<<COM0B1);
@@ -138,7 +141,6 @@ void play_note(uint8_t note) {
      uart_init();
      lcd_init();
      LCD_setScreen(WHITE);
-     //sei();
  }
  
  /* Takes in a MIDI note number and converts it to its frequency */
@@ -203,15 +205,33 @@ void play_note(uint8_t note) {
            values for each note 
  * @param clk_freq clock frequency in MHz
  */
+ 
+ 
+ void InitializeTimer() {
+   // Configure Timer 1 in CTC mode, prescaler of 256 for 1ms intervals
+   TCCR1B |= (1 << WGM12);      // CTC mode
+   TCCR1B |= (1 << CS12);       // Prescaler 256
+   OCR1A = 62;                  // Compare match value for 1 ms (16MHz / 256 / 1000)
+   TIMSK1 |= (1 << OCIE1A);     // Enable interrupt on compare match
+}
+
+ISR(TIMER1_COMPA_vect) {
+//    printf("entered isr\n");
+   timer_counter++; // Increment every 1 ms
+}
 
  // call helpers from transpose
  int main() {
+     cli();
     InitializePWM();
+    InitializeTimer();
+    sei();
     uint8_t status, data1, data2, note, sign;
     uint8_t current_note;
     uint16_t encoded_note;
 
      while(1) {
+         printf("Timer counter = %d \n", timer_counter);
         status = uart_receive(NULL);
         data1 = uart_receive(NULL);
         data2 = uart_receive(NULL);
