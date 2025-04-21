@@ -38,6 +38,20 @@ uint16_t freq_from_note(uint8_t note);
 Note melody[MAX_NOTE_COUNT]; // 300 * 4 = 1200 bytes
 int melody_idx = 0; // number of notes in the melody
 
+volatile uint32_t tic = 0; // Timer counter for 10ms intervals
+
+void InitializeTimer() { 
+    // Configure Timer 1 in CTC mode, prescaler of 256 for 1ms intervals
+    TCCR1B |= (1 << WGM12);      // CTC mode
+    TCCR1B |= (1 << CS11) | (1 << CS10); // Prescaler 256
+    OCR1A = 2499;                  // Compare match value for 40 ms (prolly)
+    TIMSK1 |= (1 << OCIE1A);     // Enable interrupt on compare match
+ }
+
+ISR(TIMER1_COMPA_vect) {
+    tic++; // Increment every 1 ms
+ }
+
 uint16_t encode_note(int note_index) {
      // Define the 12 semitone notes in an octave
      const char note_chars[] = {
@@ -125,7 +139,7 @@ void play_note(uint8_t note) {
      TCCR0A &= ~(1<<WGM01);
      TCCR0B |= (1<<WGM02);
      
-     TIMSK0 |= (1 << OCIE0A);
+    //  TIMSK0 |= (1 << OCIE0A);
  
      // toggle OC0A on compare match
      TCCR0A |= (1<<COM0B1);
