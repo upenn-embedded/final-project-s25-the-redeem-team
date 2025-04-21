@@ -148,7 +148,7 @@ void play_note(uint8_t note) {
 void print_melody(Note *melody, int length) {
    for (int i = 0; i < length; i++) {
        printf("Note: %d\n", melody[i].note);
-       printf("Start time: %d\n", melody[i].note);
+       printf("Start time: %d\n", melody[i].start_time);
        printf("Duration: %d\n\n", melody[i].duration);
    }
 }
