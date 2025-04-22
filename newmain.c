@@ -7,7 +7,7 @@
 
 
  #define F_CPU          16000000UL
- #define MAX_NOTE_COUNT 300
+ #define MAX_NOTE_COUNT 5 // lowered it for debugging purposes (mel)
  #define BUZZER         PD5
  
  #include <avr/io.h>
@@ -48,13 +48,14 @@
  int melody_idx = 0; // number of notes in the melody
  
  volatile uint32_t tic = 0; // Timer counter for 10ms intervals
+ uint16_t note_start_time = 0; // Time when the note started (in ms)
  
  void InitializeTimer() {
      // Configure Timer 1 in CTC mode, prescaler of 64 for 1ms intervals
      TCCR1B |= (1 << WGM12); // CTC mode
      TCCR1B |= (1 << CS11) | (1 << CS10); // Prescaler 64
      OCR1A = 2499; // Compare match value for 10ms (16MHz / 64 / 100Hz)
-     TIMSK1 |= (1 << OCIE1A)| (1 << OCIE1B); // Compare Match B; // Enable interrupt on compare match
+     TIMSK1 |= (1 << OCIE1A)| (1 << OCIE1B); // CompareÂ MatchÂ B; // Enable interrupt on compare match
  }
  
  ISR(TIMER1_COMPA_vect) {
@@ -69,35 +70,35 @@
      // Define the 12 semitone notes in an octave
      const char note_chars[] = {
          'C', // 0
-         'D', // 1 (D♭)
+         'D', // 1 (Dâ­)
          'D', // 2
-         'E', // 3 (E♭)
+         'E', // 3 (Eâ­)
          'E', // 4
          'F', // 5
-         'G', // 6 (G♭)
+         'G', // 6 (Gâ­)
          'G', // 7
-         'A', // 8 (A♭)
+         'A', // 8 (Aâ­)
          'A', // 9
-         'B', // 10 (B♭)
+         'B', // 10 (Bâ­)
          'B' // 11
      };
  
      const uint8_t note_signs[] = {
          0, // C
-         2, // D♭
+         2, // Dâ­
          0, // D
-         2, // E♭
+         2, // Eâ­
          0, // E
          0, // F
-         2, // G♭
+         2, // Gâ­
          0, // G
-         2, // A♭
+         2, // Aâ­
          0, // A
-         2, // B♭
+         2, // Bâ­
          0 // B
      };
  
-     // Wrap note_index to within 0–11
+     // Wrap note_index to within 0â11
      uint8_t i;
      if (LCD_RAW_NOTE) {
          i = note_index % 12;
@@ -113,14 +114,25 @@
      return ((uint16_t) note_char << 8) | sign;
  }
  
- void register_note(uint8_t note, uint16_t timestamp) {
-     if (melody_idx < MAX_NOTE_COUNT) {
-         melody[melody_idx].note = note;
-         melody[melody_idx].start_time = timestamp;
-         melody[melody_idx].duration = 0; // duration will be set when note off is received
-         melody_idx++;
-     }
- }
+// void register_note(uint8_t note, uint16_t timestamp) {
+//     if (melody_idx < MAX_NOTE_COUNT) {
+//         melody[melody_idx].note = note;
+//         melody[melody_idx].start_time = timestamp;
+//         melody[melody_idx].duration = 0; // duration will be set when note off is received
+//         melody_idx++;
+//     }
+// }
+ 
+ // stores also the duration, is called when we release the note (mel)
+ void register_note(uint8_t note, uint16_t timestamp, uint16_t duration) {
+//    printf("entered register note\n ");
+   if (melody_idx < MAX_NOTE_COUNT) {
+       melody[melody_idx].note = note;
+       melody[melody_idx].start_time = timestamp;
+       melody[melody_idx].duration = duration; // duration will be set when note off is received
+       melody_idx++;
+   }
+}
  
  void play_note(uint8_t note) {
      int freq = freq_from_note(note);
@@ -130,6 +142,14 @@
      printf("OCR0A Value: %d\n", OCR0A);
      _delay_ms(10);
  }
+ 
+ void print_melody(Note *melody, int length) {
+   for (int i = 0; i < length; i++) {
+       printf("Note: %d\n", melody[i].note);
+       printf("Start time: %d\n", melody[i].start_time);
+       printf("Duration: %d\n\n", melody[i].duration);
+   }
+}
  
  // initializer for buzzer
  
@@ -161,7 +181,7 @@
      // OCR0A = 35;
      uart_init();
      lcd_init();
-     LCD_setScreen(WHITE);
+//     LCD_setScreen(WHITE);
  }
  
  /* Takes in a MIDI note number and converts it to its frequency */
@@ -239,6 +259,7 @@
      uint16_t encoded_note;
  
      while (1) {
+//         printf("entered while loop\n");
          if (listening_mode) {
              status = uart_receive(NULL);
              data1 = uart_receive(NULL);
@@ -249,30 +270,39 @@
  
  
              if (command == 0x90 && data2 > 0) {
-                 register_note(data1, 0);
  
                  // set the current note being played
                  current_note = data1;
+                 
+                 // Record the current time as the start time of the note (mel)
+                note_start_time = tic;
+                printf("note start time: %d\n", note_start_time);
  
                  // play audio
                  play_note(data1);
  
                  // decode note into char and sign
-                 encoded_note = encode_note(data1);
-                 note = encoded_note >> 8;
-                 sign = encoded_note & (0x0F);
-                 printf("Note: %c\n", note);
-                 printf("Sign: %d\n", sign);
+//                 encoded_note = encode_note(data1);
+//                 note = encoded_note >> 8;
+//                 sign = encoded_note & (0x0F);
+//                 printf("Note: %c\n", note);
+//                 printf("Sign: %d\n", sign);
  
                  // draw note on LCD
-                 LCD_clearScreen();
-                 LCD_drawMeasure();
-                 LCD_drawNote(note, sign);
-                 printf("Note ON: %d\n", data1);
+//                 LCD_clearScreen();
+//                 LCD_drawMeasure();
+//                 LCD_drawNote(note, sign);
+//                 printf("Note ON: %d\n", data1);
                  //            
              } else if ((command == 0x80) || (command == 0x90 && data2 == 0)) {
-                 printf("Note OFF: %d\n", data1);
+//                 printf("Note OFF: %d\n", data1);
                  if (current_note == data1) {
+                     // Calculate the duration the note was pressed (mel)
+                    uint16_t duration = tic - note_start_time;
+                    printf("timer counter: %d, duration: %d\n", tic, duration);
+                    register_note(data1,note_start_time,duration);
+                    print_melody(melody, MAX_NOTE_COUNT); // check if duration was logged
+               
                      OCR0A = 0;
                      OCR0B = 0;
                  }
@@ -302,9 +332,9 @@
                  play_note(curr_note.note); //play note
  
                  // draw note on LCD
-                 LCD_clearScreen();
-                 LCD_drawMeasure();
-                 LCD_drawNoteChar(curr_note.note);
+//                 LCD_clearScreen();
+//                 LCD_drawMeasure();
+//                 LCD_drawNoteChar(curr_note.note);
              }
 
             // TODO: Add a button to switch between listening and playback modes
