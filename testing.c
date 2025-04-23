@@ -22,6 +22,7 @@
  
  typedef struct {
      uint8_t note; // from 60 to 83 (C4 to B5)
+     uint16_t start_time;      // Time in tics (10ms units)
      uint8_t duration; // in ds (1/10 of a second)
  } Note; // 4 bytes
  
@@ -54,9 +55,11 @@ uint16_t note_start_times[MAX_MIDI_NOTES] = {0};  // 0 means not active
  }
  
  // stores also the duration, is called when we release the note (mel)
- void register_note(uint8_t note, uint16_t duration) {
+ void register_note(uint8_t note, uint16_t start_time, uint16_t duration) {
+//     printf("in reg note: note = %d, start_time = %d, duration = %d", note, start_time, duration);
    if (melody_idx < MAX_NOTE_COUNT) {
        melody[melody_idx].note = note;
+       melody[melody_idx].start_time = start_time; // capture when it started
        melody[melody_idx].duration = duration; // duration will be set when note off is received
        melody_idx++;
    }
@@ -64,6 +67,7 @@ uint16_t note_start_times[MAX_MIDI_NOTES] = {0};  // 0 means not active
  
  void play_note(uint8_t note) {
      int freq = freq_from_note(note);
+     printf("freq: %d\n", freq);
      int ocr_val = (62500) / (2 * freq);
      OCR0A = ocr_val;
      OCR0B = OCR0A / 2;
@@ -81,6 +85,7 @@ uint16_t note_start_times[MAX_MIDI_NOTES] = {0};  // 0 means not active
     int i = 0;
     while (melody[i].note != 0) { // traverses only non-empty structs so it doesn't visit entire array (mel)
         printf("Note: %d\n", melody[i].note);
+        printf("Start time: %d\n", melody[i].start_time);
         printf("Duration: %d\n\n", melody[i].duration);
         i++;
     }
@@ -93,23 +98,27 @@ uint16_t note_start_times[MAX_MIDI_NOTES] = {0};  // 0 means not active
  }
  
  void play_melody(Note *melody) {
-     int i = 0;
-     int note_start_time = 0;
-     while(melody[i].note != 0) {
-         printf("note playing: %d]\n", melody[i].note);
-         note_start_time = tic;
-         while (tic <= note_start_time + melody[i].duration) {
-             play_note(melody[i].note);
-         }
-         i++;
-     }
-     stop_note();
+    tic = 0; // reset tic for playback
+    int i = 0;
+    while (melody[i].note != 0) {
+        // Wait until it's time to start this note
+        while (tic < melody[i].start_time);  
+
+        uint16_t note_end_time = melody[i].start_time + melody[i].duration;
+        while (tic < note_end_time) {
+            play_note(melody[i].note);
+        }
+
+        stop_note();
+        i++;
+    }
  }
  
  void clear_melody(Note* melody) {
     int i = 0;
     while (melody[i].note != 0) { // traverses only non-empty structs so it doesn't visit entire array (mel)
         melody[i].note = 0;
+        melody[i].start_time = 0;
         melody[i].duration = 0;
         i++;
     }
@@ -229,10 +238,16 @@ uint16_t note_start_times[MAX_MIDI_NOTES] = {0};  // 0 means not active
             
             // using C3 as a button to trigger playing the melody (for now)
             if (current_note == 48) {
+                printf("recording ended. playing...\n");
 //                print_melody(melody, MAX_NOTE_COUNT);
                 play_melody(melody);
                 clear_melody(melody);
-            } else {
+            } 
+            else if (current_note == 50) {
+                printf("recording started\n");
+                tic = 0;
+            } 
+            else {
                 // Record start time for this specific note
                 note_start_times[current_note] = tic;  
 
@@ -240,15 +255,14 @@ uint16_t note_start_times[MAX_MIDI_NOTES] = {0};  // 0 means not active
                 play_note(current_note);  
             }
         } else if ((command == 0x80) || (command == 0x90 && data2 == 0)) {
-            
             if (current_note == data1) {
                 stop_note();
             }
-            
-            if (note_start_times[data1] > 0 && data1 != 48) {
+//            printf("start time: %d\n", note_start_times[data1]);
+            if (note_start_times[data1] > 0 && (data1 != 48 || data1 != 50)) {
                 uint16_t duration = tic - note_start_times[data1];
-                register_note(data1, duration);
-                print_melody(melody, MAX_NOTE_COUNT);
+                register_note(data1, note_start_times[data1], duration);
+//                print_melody(melody, MAX_NOTE_COUNT);
 
                 note_start_times[data1] = 0;  // Mark note as no longer active
             }
