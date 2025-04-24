@@ -24,7 +24,7 @@
  
  
  const uint8_t LCD_RAW_NOTE = 0;
- uint8_t SHIFT = 3;
+ int SHIFT = 0;
  
  int listening_mode = 1;
  
