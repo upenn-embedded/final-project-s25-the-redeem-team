@@ -10,18 +10,18 @@
 #define F_CPU 16000000UL
 #define MAX_NOTE_COUNT 300
 #define BUZZER PD5
-#define PC_RESET PC0
-#define PC_MODE PC1
+#define PC_RESET PC0 // resets the system and clears recorded notes
+#define PC_MODE PC1 // toggles between recording and playback mode
 
 #include <util/delay.h>
 #include <xc.h>
 
 uint8_t SHIFT = 0;
-uint8_t listening_mode = 0;
+uint8_t listening_mode = 0; // 0 = playback mode, 1 = recording mode
 volatile uint8_t RESET = 1;
 volatile uint8_t prev_PC_state = 0xFF;
-volatile uint8_t playback_triggered = 0;
-volatile uint8_t should_playback = 0;
+volatile uint8_t playback_triggered = 0; // initiates one-second delay before playback
+volatile uint8_t should_playback = 0; // plays the playback
 
 volatile uint32_t tic = 0;
 uint16_t note_start_times[128] = {0};
@@ -38,18 +38,18 @@ int melody_idx = 0;
 void InitializeTimer() {
     TCCR1B |= (1 << WGM12);
     TCCR1B |= (1 << CS11) | (1 << CS10);
-    OCR1A = 2499;
+    OCR1A = 2499; // fires every 10 ms
     TIMSK1 |= (1 << OCIE1A);
 }
 
 ISR(TIMER1_COMPA_vect) {
     tic++;
-    if (playback_triggered) {
-        static uint16_t countdown = 100; // 100 * 10ms = 1 second
+    if (playback_triggered) { // checks if a 1-second delay before playback is currently in progress.
+        static uint16_t countdown = 100; // 100 * 10ms = 1 second --> 1 sec delay before playing back the melody
         if (--countdown == 0) {
-            should_playback = 1;
+            should_playback = 1; // signal the main loop to start playback
             playback_triggered = 0;
-            countdown = 100;
+            countdown = 100; // reset countdown
         }
     }
 }
@@ -82,7 +82,7 @@ ISR(PCINT1_vect) {
             listening_mode = 1;
             tic = 0;
             printf("Switched to RECORDING mode\n");
-        } else {
+        } else { // toggling between playback and recording modes
             listening_mode = !listening_mode;
             if (!listening_mode) {
                 printf("Switched to PLAYBACK mode\n");
@@ -175,7 +175,9 @@ void process_uart() {
             }
             note_start_times[data1] = 0;
         }
-        stop_note();
+        if (current_note == data1) {
+            stop_note();
+        }
     }
 }
 
@@ -196,7 +198,9 @@ int main() {
             play_melody(melody);
         }
 
-        if (uart_data_available()) {
+        if (uart_data_available()) { // checks whether new serial data has been received and is ready to be read
+            // We need to case on data availability because:
+            // reading from an empty UART buffer will cause process_uart() to hang or block
             process_uart();
         }
     }
