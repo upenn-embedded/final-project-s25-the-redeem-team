@@ -56,4 +56,7 @@ void uart_scanf(const char* format, ...);
 
 void determine_line_ending(void);
 
+unsigned short int uart_data_available(void);
+
+
 #endif // UART_H

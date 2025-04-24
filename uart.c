@@ -165,6 +165,11 @@ void uart_scanf(const char* format, ...)
     }
     va_end(args);
 }
+
+unsigned short int uart_data_available(void) {
+    return (UCSR0A & (1 << RXC0));
+}
+
 #else
 #error "MAX_STRING_LENGTH undefined"
 #endif
