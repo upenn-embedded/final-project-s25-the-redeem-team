@@ -197,7 +197,9 @@ void process_uart() {
             }
             note_start_times[data1] = 0;
         }
-        stop_note();
+        if (current_note == data1) {
+            stop_note();
+        }
     }
 }
 
