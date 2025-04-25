@@ -11,7 +11,7 @@
 #define PC_RESET PC0
 #define PC_MODE PC1
 
-const uint8_t LCD_RAW_NOTE = 0;
+// const uint8_t LCD_RAW_NOTE = 0;
 
 volatile short int SHIFT = 0;
 volatile uint8_t listening_mode = 0;
@@ -164,19 +164,19 @@ uint16_t encode_note(int note_index) {
 void play_melody(Note *melody, volatile uint8_t mode) {
     tic = 0;
     // LCD graphics
-    uint8_t note, sign;
-    uint16_t encoded_note;
+    // uint8_t note, sign;
+    // uint16_t encoded_note;
     for (int i = 0; melody[i].note != 0; i++) {
         while (tic < melody[i].start_time);
         uint16_t end_time = melody[i].start_time + melody[i].duration;
         
         // draw note on LCD
-        encoded_note = encode_note(melody[i].note);
-        note = encoded_note >> 8;
-        sign = encoded_note & (0x0F);
-        LCD_clearScreen();
-        LCD_drawMeasure();
-        LCD_drawNote(note, sign);
+        // encoded_note = encode_note(melody[i].note);
+        // note = encoded_note >> 8;
+        // sign = encoded_note & (0x0F);
+        // LCD_clearScreen();
+        // LCD_drawMeasure();
+        // LCD_drawNote(note, sign);
 
         while (tic < end_time) play_note(melody[i].note, mode, SHIFT);
         stop_note();
@@ -195,8 +195,8 @@ void process_uart() {
     static uint8_t current_note = 0;
     
     // LCD graphics
-    uint8_t note, sign;
-    uint16_t encoded_note;
+    // uint8_t note, sign;
+    // uint16_t encoded_note;
 
     if (command == 0x90 && data2 > 0) {
         current_note = data1;
@@ -204,14 +204,14 @@ void process_uart() {
         if (listening_mode) register_note(current_note, tic, 0);
         play_note(current_note, listening_mode, SHIFT);
 
-        encoded_note = encode_note(data1);
-        note = encoded_note >> 8;
-        sign = encoded_note & (0x0F);
+        // encoded_note = encode_note(data1);
+        // note = encoded_note >> 8;
+        // sign = encoded_note & (0x0F);
 
         // draw note on LCD
-        LCD_clearScreen();
-        LCD_drawMeasure();
-        LCD_drawNote(note, sign);
+        // LCD_clearScreen();
+        // LCD_drawMeasure();
+        // LCD_drawNote(note, sign);
 
     } else if ((command == 0x80) || (command == 0x90 && data2 == 0)) {
         if (note_start_times[data1] > 0) {
@@ -239,7 +239,7 @@ int main() {
     InitializePWM();
     uart_init();
     lcd_init();
-    LCD_setScreen(WHITE);
+    // LCD_setScreen(WHITE);
     InitializePinChangeInterrupts();
     sei();
 
