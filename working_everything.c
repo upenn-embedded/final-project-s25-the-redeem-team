@@ -11,7 +11,8 @@
 #define MAX_NOTE_COUNT 100
 #define BUZZER PD5
 #define PC_RESET PC0
-#define PC_MODE PC1
+#define PC_MODE PD1
+#define LED PD1
 
 const uint8_t LCD_RAW_NOTE = 1;
 
@@ -45,6 +46,10 @@ void Initialize() {
     lcd_init();
     
     LCD_setScreen(WHITE);
+
+    // Initialize LED pin
+    DDRD |= (1 << LED); 
+    PORTD &= ~(1 << LED);   // Start with LED off
 }
 
 void InitializeTimer() {
@@ -100,14 +105,17 @@ ISR(PCINT1_vect) {
             RESET = 0;
             listening_mode = 1;
             tic = 0;
+            PORTD |= (1 << LED);  // Turn on LED
             printf("Switched to RECORDING mode\n");
         } else {
             listening_mode = !listening_mode;
             if (!listening_mode) {
+                PORTD &= ~(1 << LED);  // Turn off LED
                 printf("Switched to PLAYBACK mode\n");
                 playback_triggered = 1;
             } else {
                 tic = 0;
+                PORTD |= (1 << LED);  // Turn on LED
                 printf("Switched to RECORDING mode\n");
             }
         }
@@ -123,6 +131,7 @@ ISR(PCINT1_vect) {
         for (int i = 0; i < MAX_NOTE_COUNT; i++) melody[i] = (Note){0};
         for (int i = 0; i < 128; i++) note_start_times[i] = 0;
         tic = 0;
+        PORTD &= ~(1 << LED);  // Turn off LED on reset
         printf("RESET activated\n");
     }
     prev_PC_state = curr_state;
