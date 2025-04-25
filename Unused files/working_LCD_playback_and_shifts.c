@@ -173,6 +173,10 @@ uint16_t freq_from_note(uint8_t note) {
         shift = SHIFT;
     }
     switch (note + shift) {
+        case 48: return 131; case 49: return 139; case 50: return 147; 
+        case 51: return 156; case 52: return 165; case 53: return 175; 
+        case 54: return 185; case 55: return 196; case 56: return 208; 
+        case 57: return 220; case 58: return 233; case 59: return 247; 
         case 60: return 262; case 61: return 277; case 62: return 294;
         case 63: return 311; case 64: return 330; case 65: return 349;
         case 66: return 370; case 67: return 392; case 68: return 415;
@@ -181,7 +185,11 @@ uint16_t freq_from_note(uint8_t note) {
         case 75: return 622; case 76: return 659; case 77: return 698;
         case 78: return 740; case 79: return 784; case 80: return 831;
         case 81: return 880; case 82: return 932; case 83: return 988;
-        default: return 0;
+        case 84: return 1047; case 85: return 1109; case 86: return 1175;
+        case 87: return 1245; case 88: return 1319; case 89: return 1397; 
+        case 90: return 1480; case 91: return 1568; case 92: return 1661; 
+        case 93: return 1760; case 94: return 1865;  case 95: return 1976; 
+        case 96: return 2093; default: return 0;
     }
 }
 
