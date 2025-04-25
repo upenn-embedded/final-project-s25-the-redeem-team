@@ -193,6 +193,10 @@ void process_uart() {
     uint8_t command = status & 0xF0;
 
     static uint8_t current_note = 0;
+    
+    // LCD graphics
+    uint8_t note, sign;
+    uint16_t encoded_note;
 
     if (command == 0x90 && data2 > 0) {
         current_note = data1;
