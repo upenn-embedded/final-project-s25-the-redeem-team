@@ -11,6 +11,8 @@
 #define PC_RESET PC0
 #define PC_MODE PC1
 
+const uint8_t LCD_RAW_NOTE = 0;
+
 volatile short int SHIFT = 0;
 volatile uint8_t listening_mode = 0;
 volatile uint8_t RESET = 1;
@@ -126,14 +128,56 @@ ISR(PCINT2_vect) {
 }
 
 // ----------------------------------------------------------
+//  LCD FUNC
+// ----------------------------------------------------------
+
+uint16_t encode_note(int note_index) {
+     // Define the 12 semitone notes in an octave
+     const char note_chars[] = {
+         'C', 'D', 'D', 'E', 'E', 'F', 'G', 'G', 'A', 'A', 'B', 'B' 
+     };
+ 
+     const uint8_t note_signs[] = {
+         0, 2, 0, 2, 0, 0, 2, 0, 2, 0, 2, 0 
+     };
+ 
+     // Wrap note_index to within 0â11
+     uint8_t i;
+     if (LCD_RAW_NOTE) {
+         i = note_index % 12;
+     } else {
+         i = (note_index + SHIFT) % 12;
+     }
+ 
+     if (i < 0) i += 12;
+ 
+     char note_char = note_chars[i];
+     uint8_t sign = note_signs[i];
+ 
+     return ((uint16_t) note_char << 8) | sign;
+ }
+
+// ----------------------------------------------------------
 //  OUTPUT AND UART FUNCS
 // ----------------------------------------------------------
 
 void play_melody(Note *melody, volatile uint8_t mode) {
     tic = 0;
+    // LCD graphics
+    uint8_t note, sign;
+    uint16_t encoded_note;
     for (int i = 0; melody[i].note != 0; i++) {
         while (tic < melody[i].start_time);
         uint16_t end_time = melody[i].start_time + melody[i].duration;
+        
+        // draw note on LCD
+        encoded_note = encode_note(melody[i].note);
+        note = encoded_note >> 8;
+        sign = encoded_note & (0x0F);
+        LCD_clearScreen();
+        LCD_drawMeasure();
+        LCD_drawNote(note, sign);
+
         while (tic < end_time) play_note(melody[i].note, mode, SHIFT);
         stop_note();
     }
@@ -155,6 +199,16 @@ void process_uart() {
         note_start_times[current_note] = tic;
         if (listening_mode) register_note(current_note, tic, 0);
         play_note(current_note, listening_mode, SHIFT);
+
+        encoded_note = encode_note(data1);
+        note = encoded_note >> 8;
+        sign = encoded_note & (0x0F);
+
+        // draw note on LCD
+        LCD_clearScreen();
+        LCD_drawMeasure();
+        LCD_drawNote(note, sign);
+
     } else if ((command == 0x80) || (command == 0x90 && data2 == 0)) {
         if (note_start_times[data1] > 0) {
             uint16_t duration = tic - note_start_times[data1];
@@ -181,6 +235,7 @@ int main() {
     InitializePWM();
     uart_init();
     lcd_init();
+    LCD_setScreen(WHITE);
     InitializePinChangeInterrupts();
     sei();
 
@@ -192,13 +247,11 @@ int main() {
             continue;
         }
         if (should_playback) {
-            printf("should playback\n");
             should_playback = 0;
             play_melody(melody, listening_mode);
         }
 
         if (uart_data_available()) {
-            printf("uart data available\n");
             process_uart();
         }
     }
