@@ -1,75 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Final Project: Music to My Ears</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Final Project: Music to My Ears</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    h1, h2, h3 {
+      text-align: center;
+    }
+    a {
+      color: blue;
+    }
+  </style>
 </head>
 <body>
 
-<h1>Final Project: Music to My Ears</h1>
+<div class="container">
 
+<h1>Final project: Music to my Ears</h1>
 <h3>Melina Daniilidis, Garrett Kirsch, Nikolaos Rapanis</h3>
 
 <h2>Results</h2>
-<p>Our final device, <strong>Music to My Ears</strong>, successfully reads live MIDI input from an electric keyboard, allows the user to shift the melody up or down by a desired number of semitones using two buttons, and replays the transposed melody through a buzzer with accurate timing. The system also displays the inputted and shifted notes on a color LCD screen for easy visual feedback. It uses an ATmega328PB microcontroller to manage real-time MIDI UART communication, PWM audio output, and user input simultaneously. We implemented a full graphics library for musical notation display, wrote custom drivers for the buzzer and screen, and built a simple cardboard housing to organize the components neatly on the workbench. In the end, we delivered a working, responsive prototype that achieves the original project goal: enabling musicians to quickly and easily transpose melodies without needing music theory knowledge.</p>
+<p>Our final device, Music to My Ears, successfully reads live MIDI input from an electric keyboard, allows the user to shift the melody up or down by a desired number of semitones using two buttons, and replays the transposed melody through a buzzer with accurate timing. The system also displays the inputted and shifted notes on a color LCD screen for easy visual feedback. It uses an ATmega328PB microcontroller to manage real-time MIDI UART communication, PWM audio output, and user input simultaneously. We implemented a full graphics library for musical notation display, wrote custom drivers for the buzzer and screen, and built a simple cardboard housing to organize the components neatly on the workbench. In the end, we delivered a working, responsive prototype that achieves the original project goal: enabling musicians to quickly and easily transpose melodies without needing music theory knowledge.</p>
 
 <h2>Video Demonstration</h2>
-<iframe src="https://drive.google.com/file/d/1ngGfAtsrGlymLhpcTdSK29lmTKguykDP/preview" width="640" height="480" allow="autoplay"></iframe>
+<p><a href="https://drive.google.com/file/d/1ngGfAtsrGlymLhpcTdSK29lmTKguykDP/view?usp=sharing" target="_blank">Link</a></p>
 
-<h2>Photo Album</h2>
-<p>+++ Include photos of your device from a few angles, showing both exterior and interior. +++</p>
+<h2>Photo album</h2>
+<p>+++ Include photos of your device from a few angles. If you have a casework, show both the exterior and interior (where the good EE bits are!). +++</p>
 
 <h2>Software Requirements Specification Validation</h2>
-<table border="1">
-<tr><th>ID</th><th>Description</th></tr>
-<tr><td>SRS-01</td><td>The notes from the input recording shall be cleaned and parsed accurately based on their frequencies.</td></tr>
-<tr><td>SRS-02</td><td>The screen will show the number of times the shift button has been pressed, so the user has a visual indication of how many semitones they want to shift by.</td></tr>
-<tr><td>SRS-03</td><td>The transposition algorithm will correctly shift each note of the inputted melody by the user's desired amount of semitones.</td></tr>
-<tr><td>SRS-04</td><td>The screen should correctly display the names of the notes from the transposed melody in a readable format.</td></tr>
-<tr><td>SRS-05</td><td>The speaker shall correctly output the transposition melody.</td></tr>
-<tr><td>SRS-06</td><td>The screen should display the transposed notes and the speaker will play the frequencies of the transposed notes simultaneously.</td></tr>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>SRS-01</td>
+    <td>The notes from the input recording shall be cleaned and parsed accurately based on their frequencies.</td>
+  </tr>
+  <tr>
+    <td>SRS-02</td>
+    <td>The screen will show the number of times the shift button has been pressed, so the user has a visual indication of how many semitones they want to shift by.</td>
+  </tr>
+  <tr>
+    <td>SRS-03</td>
+    <td>The transposition algorithm will correctly shift each note of the inputted melody by the user's desired amount of semitones.</td>
+  </tr>
+  <tr>
+    <td>SRS-04</td>
+    <td>The screen should correctly display the names of the notes from the transposed melody in a readable format, so the user can try to play the transposed melody on the keyboard if they so choose.</td>
+  </tr>
+  <tr>
+    <td>SRS-05</td>
+    <td>The speaker shall correctly output the transposition melody. We will test on the same types of inputs as the transposition algorithm and in similar order.</td>
+  </tr>
+  <tr>
+    <td>SRS-06</td>
+    <td>The screen should display the transposed notes and the speaker will play the frequencies of the transposed notes simultaneously.</td>
+  </tr>
 </table>
 
-<p><strong>What worked well:</strong> We were able to read MIDI input reliably, store melodies, shift notes by a user-defined semitone amount, and display both the original and shifted notes on the LCD in real-time.</p>
-<p><strong>What changed:</strong> We changed from selecting input/output keys to simple up/down semitone shifting to simplify design and user experience.</p>
-<p><strong>New Requirements Added:</strong> Added button-controlled shifting and shift-count display.</p>
-<p><strong>Challenges:</strong> Handling interrupts with UART MIDI input; resolved by using polling temporarily, then fixing the ISR issues for final demo.</p>
-<p><strong>Validation:</strong><br>
-SRS-01: Oscilloscope proof of MIDI parsing.<br>
-SRS-06: Video proof of the screen displaying transposed notes.</p>
+<p><strong>What worked well:</strong><br>
+We were able to read MIDI input reliably, store melodies, shift notes by a user-defined semitone amount, and display both the original and shifted notes on the LCD in real-time.</p>
+
+<p><strong>What changed:</strong><br>
+Initially, we planned for selecting input and output keys (e.g., C major to A minor). Midway through development, we changed to simple up/down relative semitone shifting to avoid needing user key input and to simplify button controls. This also removed the need to validate user-selected keys against the melody.</p>
+
+<p><strong>New Requirements Added:</strong><br>
+We added requirements for button-controlled shifting and displaying the shift count on the screen.</p>
+
+<p><strong>Challenges:</strong><br>
+Handling interrupts while using UART-based MIDI input was challenging so we had to resort to using polling for the buttons, until we eventually managed to use interrupts without issues just before the final demonstration.</p>
+
+<p><strong>Validation</strong><br>
+SRS-01: Validation from oscilloscope proof of MIDI parsing.<br>
+SRS-06: Validation from video of the screen displaying the transposed notes.</p>
 
 <h2>Hardware Requirements Specification Validation</h2>
-<table border="1">
-<tr><th>ID</th><th>Description</th></tr>
-<tr><td>HRS-01</td><td>A mini electric piano will be used to provide inputs (i.e. music) processed by the ATmega.</td></tr>
-<tr><td>HRS-02</td><td>There will be two buttons to choose the shift amount (up/down) by a semitone for each press.</td></tr>
-<tr><td>HRS-03</td><td>A screen will display the input key, output key, input octave, and output octave of the music.</td></tr>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>HRS-01</td>
+    <td>A mini electric piano will be used to provide inputs (i.e. music) that will then be processed by the atmega.</td>
+  </tr>
+  <tr>
+    <td>HRS-02</td>
+    <td>There will be two buttons to choose the shift amount (either to a higher or lower note) by a semitone for each button press.</td>
+  </tr>
+  <tr>
+    <td>HRS-03</td>
+    <td>A screen will be used to display the input key, output key, input octave, and output octave of the music.</td>
+  </tr>
 </table>
 
-<p><strong>What worked well:</strong> The UART MIDI circuit was stable after bypassing the optoisolator. LCD and buzzer drivers functioned reliably. Button presses worked correctly using interrupts.</p>
-<p><strong>What changed:</strong> We switched to a separate buzzer system since the piano lacked a built-in speaker, and simplified to a single speaker.</p>
-<p><strong>Challenges:</strong> MIDI optoisolator did not work, likely faulty. We decided to bypass it with no problems observed.</p>
-<p><strong>Validation:</strong><br>
-HRS-01: Video showing MIDI input live with UART printout.<br>
-HRS-02: Buttons tested and working for shift amount changes.</p>
+<p><strong>What worked well:</strong><br>
+The MIDI communication circuit using UART was stable after bypassing the original optoisolator. Our LCD screen and buzzer drivers functioned reliably. Button presses for shifting semitones worked correctly with interrupts, avoiding UART conflicts.</p>
+
+<p><strong>What changed:</strong><br>
+Initially, we expected the piano to have a built-in speaker, but it did not. We added a separate buzzer system instead. Additionally, we planned to have separate speakers for listening and playback mode, however, we decided that this would be redundant.</p>
+
+<p><strong>Challenges:</strong><br>
+The circuitry proposed by the official MIDI protocol documentation did not provide an output (potentially due to a faulty opto-isolator). Due to the simple nature of our circuit, we decided not to use it at all with the potential risk of not getting all the signals (something that thankfully never happened).</p>
+
+<p><strong>Validation</strong><br>
+HRS-01: Video showing MIDI input captured live, UART printout confirmation.<br>
+HRS-02: Buttons implemented and tested for shift amount changes.</p>
 
 <h2>Reflection</h2>
-<p><strong>What did we learn?</strong> We learned how to integrate multiple subsystems (UART MIDI, PWM audio, LCD graphics) on an embedded platform, and how to adapt around hardware limitations.</p>
 
-<p><strong>What went well?</strong> Graphics, UART parsing, and note shifting all integrated cleanly, and the buzzer output matched expectations. Simplifying the user interface greatly helped usability.</p>
+<p><strong>What did we learn?</strong><br>
+We built a complete embedded system that integrates UART-based MIDI communication, real-time audio output via PWM, and graphical output through an LCD, all controlled by user input. Also, we learned how to adapt a project based on our hardware limitations and integration challenges.</p>
 
-<p><strong>What accomplishments are we proud of?</strong> Building a real-time MIDI-driven system with custom drivers, achieving the original functionality despite setbacks.</p>
+<p><strong>What went well?</strong><br>
+Our LCD graphics library, UART MIDI parsing, and note-shifting logic all worked together smoothly. The display of notes and the buzzer's frequency output worked reliably once we had the right hardware in place. Our decision to simplify the transposition interface to semitone shifting also made the user experience much more intuitive.</p>
 
-<p><strong>What did we gain?</strong> Hands-on embedded integration experience, deeper understanding of UART+timing conflicts, and better design flexibility.</p>
+<p><strong>What accomplishments are we proud of?</strong><br>
+We are especially proud that our device can receive live MIDI input from a real electric piano, shift melodies in real-time, and provide visual and audio feedback using custom-written drivers without any delays. Despite setbacks with and design changes, we produced a functioning musical tool that achieves our original goal.</p>
 
-<p><strong>Did we have to change our approach?</strong> Yes, we switched from "key-to-key" transposition to simple semitone shifting, removing the need for user key input validation.</p>
+<p><strong>What did we gain from this experience?</strong><br>
+Hands-on experience with the challenges of integrating multiple subsystems on a resource-constrained microcontroller, as well as the discipline required to adjust our design without compromising functionality. We also learned the value of thorough debugging, especially when dealing with asynchronous serial protocols and timing conflicts.</p>
 
-<p><strong>What could have been done differently?</strong> Building our own mock keyboard (with switches + resistive divider + ADC) would have avoided delays from waiting for external parts.</p>
+<p><strong>Did we have to change our approach?</strong><br>
+Yes. Originally, we planned to allow the user to transpose a melody from one musical key to another (e.g., C major to G minor). However, this approach required additional user input and key signature validation, which added unnecessary complexity. We switched to a semitone-based shifting method using two buttons (up/down), which was simpler to implement, more user-friendly, and more robust for real-time performance.</p>
 
-<p><strong>Unexpected obstacles?</strong> The MIDI optoisolator setup failed. After removing it, the circuit still functioned correctly without signal loss.</p>
+<p><strong>What could have been done differently?</strong><br>
+We could have built our own mock keyboard using switches and a resistive network with an ADC. This would have removed our dependency on external parts (the MIDI keyboard), which arrived later than expected and slowed early progress. Designing our own input hardware could have also given us more control over note timing and synchronization.</p>
 
-<p><strong>Next steps?</strong> Adding polyphonic input support (chords) would make the system much more powerful for real musical applications.</p>
+<p><strong>Did we encounter unexpected obstacles?</strong><br>
+Yes — the biggest was our initial use of the opto-isolator for MIDI input, following the official MIDI circuit documentation. Despite proper setup, it failed to produce any readable output, likely due to a faulty opto-isolator. After debugging, we decided to remove the opto-isolator entirely and directly receive the MIDI signal. While this technically violated the MIDI electrical spec, it worked reliably for our simple circuit without any observed signal loss.</p>
+
+<p><strong>What could be a next step for this project?</strong><br>
+The most natural next step would be supporting polyphonic input, i.e., handling chords. Right now, our system assumes one note at a time. Expanding it to handle simultaneous notes would require reworking our melody data structure and output timing, but it would make the tool far more useful to musicians working with real music.</p>
+
+</div>
 
 </body>
 </html>
