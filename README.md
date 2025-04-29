@@ -8,7 +8,7 @@ Our final device, Music to My Ears, successfully reads live MIDI input from an e
 
 ## Video Demonstration
 
-+++ Video link
+[Link](https://drive.google.com/file/d/1ngGfAtsrGlymLhpcTdSK29lmTKguykDP/view?usp=sharing)
 
 ## Photo album
 
@@ -22,8 +22,10 @@ Our final device, Music to My Ears, successfully reads live MIDI input from an e
 | SRS-02 | The screen will show the number of times the shift button has been pressed, so the user has a visual indication of how many semitones they want to shift by.                                                                                                                                                                                       |
 | SRS-03 | The transposition algorithm will correctly shift each note of the inputted melody by the user's desired amount of semitones.                                                                                                                                   |
 | SRS-04 | The screen should correctly display the names of the notes from the transposed melody in a readable format, so the user can try to play the transposed melody on the keyboard if they so choose.                                                                                                                                                    |
-| SRS-05 | The speaker shall correctly output the transposition melody. We will test on the same types of inputs as the transposition algorithm and in similar order.                                                                                                                                                                                          |
-| SRS-06 | The screen should display the transposed notes and the speaker will play the frequencies of the transposed notes simultaneously.                                                                       
+| SRS-05 | The speaker shall correctly output the transposition melody. We will test on the same types of inputs as the transposition algorithm and in similar order.                                                                          |
+| SRS-06 | The screen should display the transposed notes and the speaker will play the frequencies of the transposed notes simultaneously.|     
+
+
 **What worked well:**
 We were able to read MIDI input reliably, store melodies, shift notes by a user-defined semitone amount, and display both the original and shifted notes on the LCD in real-time.
 

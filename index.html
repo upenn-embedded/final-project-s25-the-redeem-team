@@ -14,6 +14,7 @@
       max-width: 900px;
       margin: auto;
       padding: 20px;
+      text-align: justify;
     }
     table {
       width: 100%;
@@ -33,6 +34,17 @@
     a {
       color: blue;
     }
+    .center-media {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .photo-album {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
@@ -46,10 +58,16 @@
 <p>Our final device, Music to My Ears, successfully reads live MIDI input from an electric keyboard, allows the user to shift the melody up or down by a desired number of semitones using two buttons, and replays the transposed melody through a buzzer with accurate timing. The system also displays the inputted and shifted notes on a color LCD screen for easy visual feedback. It uses an ATmega328PB microcontroller to manage real-time MIDI UART communication, PWM audio output, and user input simultaneously. We implemented a full graphics library for musical notation display, wrote custom drivers for the buzzer and screen, and built a simple cardboard housing to organize the components neatly on the workbench. In the end, we delivered a working, responsive prototype that achieves the original project goal: enabling musicians to quickly and easily transpose melodies without needing music theory knowledge.</p>
 
 <h2>Video Demonstration</h2>
-<iframe src="https://drive.google.com/file/d/1ngGfAtsrGlymLhpcTdSK29lmTKguykDP/preview" width="640" height="480" allow="autoplay"></iframe>
+<div class="center-media">
+  <iframe src="https://drive.google.com/file/d/1ngGfAtsrGlymLhpcTdSK29lmTKguykDP/preview" width="640" height="480" allow="autoplay"></iframe>
+</div>
 
 <h2>Photo album</h2>
-<p>+++ Include photos of your device from a few angles. If you have a casework, show both the exterior and interior (where the good EE bits are!). +++</p>
+<div class="photo-album">
+  <img src="Images/IMG_3281.jpg" alt="Device Photo 1" width="300">
+  <img src="Images/IMG_3282.jpg" alt="Device Photo 2" width="300">
+  <img src="Images/IMG_3315.PNG" alt="Device Photo 3" width="300">
+</div>
 
 <h2>Software Requirements Specification Validation</h2>
 
@@ -97,8 +115,17 @@ We added requirements for button-controlled shifting and displaying the shift co
 Handling interrupts while using UART-based MIDI input was challenging so we had to resort to using polling for the buttons, until we eventually managed to use interrupts without issues just before the final demonstration.</p>
 
 <p><strong>Validation</strong><br>
-SRS-01: Validation from oscilloscope proof of MIDI parsing.<br>
-SRS-06: Validation from video of the screen displaying the transposed notes.</p>
+SRS-01: We have validated the input reading by printing the MIDI note to the serial terminal whenever it is played as demonstrated on the video below:</p>
+<div class="center-media">
+  <iframe 
+    src="https://drive.google.com/file/d/1kMERMMm2DjY6He5HBS92R28iUckF7n3f/preview" 
+    width="360" 
+    height="640" 
+    style="border: none;" 
+    allow="autoplay">
+  </iframe>
+</div>
+<p>SRS-06: We have met this requirement, as evident in the demo video. Specifically, during the listening mode the LCD screen displays the current played note and the buzzer outputs the corresponding sound.</p>
 
 <h2>Hardware Requirements Specification Validation</h2>
 
@@ -131,18 +158,18 @@ Initially, we expected the piano to have a built-in speaker, but it did not. We 
 The circuitry proposed by the official MIDI protocol documentation did not provide an output (potentially due to a faulty opto-isolator). Due to the simple nature of our circuit, we decided not to use it at all with the potential risk of not getting all the signals (something that thankfully never happened).</p>
 
 <p><strong>Validation</strong><br>
-HRS-01: Video showing MIDI input captured live, UART printout confirmation.<br>
-HRS-02: Buttons implemented and tested for shift amount changes.</p>
+HRS-01: We have met this requirement alongside SRS-01. The video showing MIDI input captured live with UART printout confirmation.<br>
+HRS-02: The requirement is validated by the final demonstration video where we press the buttons, changing the display and getting back a different sound in playback mode.</p>
 
 <h2>Reflection</h2>
 
 <p><strong>What did we learn?</strong><br>
 We built a complete embedded system that integrates UART-based MIDI communication, real-time audio output via PWM, and graphical output through an LCD, all controlled by user input. Also, we learned how to adapt a project based on our hardware limitations and integration challenges.</p>
 
-<p><strong>What went well?</strong><br>
+<p><strong>What went well:</strong><br>
 Our LCD graphics library, UART MIDI parsing, and note-shifting logic all worked together smoothly. The display of notes and the buzzer's frequency output worked reliably once we had the right hardware in place. Our decision to simplify the transposition interface to semitone shifting also made the user experience much more intuitive.</p>
 
-<p><strong>What accomplishments are we proud of?</strong><br>
+<p><strong>What accomplishments are we proud of:</strong><br>
 We are especially proud that our device can receive live MIDI input from a real electric piano, shift melodies in real-time, and provide visual and audio feedback using custom-written drivers without any delays. Despite setbacks with and design changes, we produced a functioning musical tool that achieves our original goal.</p>
 
 <p><strong>What did we gain from this experience?</strong><br>
